@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login & Student Registration</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #f8f9fa;
+    }
+    header {
+      background: #007bff;
+      color: white;
+      padding: 15px;
+      text-align: center;
+    }
+    .container {
+      width: 350px;
+      margin: 50px auto;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    input, select, textarea, button {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      background: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    .dashboard {
+      display: none;
+      padding: 20px;
+    }
+    .form-box {
+      max-width: 400px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 30px;
+      background: white;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    th, td {
+      padding: 10px;
+      border: 1px solid #ddd;
+      text-align: center;
+    }
+    th {
+      background: #007bff;
+      color: white;
+    }
+    .action-btn {
+      padding: 5px 10px;
+      margin: 2px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      color: white;
+    }
+    .edit-btn {
+      background: #28a745;
+    }
+    .delete-btn {
+      background: #dc3545;
+    }
+    .search-box {
+      margin: 20px 0;
+      text-align: center;
+    }
+    .search-box input {
+      width: 250px;
+      padding: 8px;
+    }
+    .export-btn {
+      background: #17a2b8;
+      margin: 10px 0;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Admin Panel</h1>
+  </header>
+
+  <!-- Login Section -->
+  <div class="container" id="login-box">
+    <h2>Admin Login</h2>
+    <form onsubmit="return loginAdmin(event)">
+      <input type="text" id="username" placeholder="Username" required>
+      <input type="password" id="password" placeholder="Password" required>
+      <button type="submit">Login</button>
+    </form>
+  </div>
+
+  <!-- Dashboard Section -->
+  <div class="dashboard" id="dashboard">
+    <h2>Student Registration Form</h2>
+    <div class="form-box">
+      <form onsubmit="return registerStudent(event)">
+        <input type="hidden" id="editIndex">
+
+        <label>Student Name</label>
+        <input type="text" id="studentName" required>
+
+        <label>Age</label>
+        <input type="number" id="age" min="3" max="18" required>
+
+        <label>Gender</label>
+        <select id="gender" required>
+          <option value="">--Select--</option>
+          <option>Male</option>
+          <option>Female</option>
+          <option>Other</option>
+        </select>
+
+        <label>Class</label>
+        <select id="class" required>
+          <option value="">--Select--</option>
+          <option>Nursery</option>
+          <option>LKG</option>
+          <option>UKG</option>
+          <option>1st</option>
+          <option>2nd</option>
+          <option>3rd</option>
+          <option>4th</option>
+          <option>5th</option>
+        </select>
+
+        <label>Parent/Guardian Name</label>
+        <input type="text" id="parent" required>
+
+        <label>Contact Number</label>
+        <input type="tel" id="contact" pattern="[0-9]{10}" placeholder="10-digit number" required>
+
+        <label>Address</label>
+        <textarea id="address" rows="3" required></textarea>
+
+        <button type="submit" id="submitBtn">Register</button>
+      </form>
+    </div>
+
+    <!-- Search box -->
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="Search by Name or Class..." onkeyup="searchStudent()">
+    </div>
+
+    <!-- Export button -->
+    <div style="text-align: center;">
+      <button class="export-btn" onclick="exportCSV()">Export to CSV</button>
+    </div>
+
+    <!-- Table to display registered students -->
+    <h2>Registered Students</h2>
+    <table id="studentTable">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Age</th>
+          <th>Gender</th>
+          <th>Class</th>
+          <th>Parent</th>
+          <th>Contact</th>
+          <th>Address</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <script>
+    // Simple login check
+    function loginAdmin(event) {
+      event.preventDefault();
+      let user = document.getElementById("username").value;
+      let pass = document.getElementById("password").value;
+
+      if(user === "admin" && pass === "12345") {
+        document.getElementById("login-box").style.display = "none";
+        document.getElementById("dashboard").style.display = "block";
+        loadStudents();
+      } else {
+        alert("Invalid Username or Password!");
+      }
+      return false;
+    }
+
+    // Load students from localStorage
+    function loadStudents() {
+      let students = JSON.parse(localStorage.getItem("students")) || [];
+      renderTable(students);
+    }
+
+    // Save students to localStorage
+    function saveStudents(students) {
+      localStorage.setItem("students", JSON.stringify(students));
+    }
+
+    // Render table
+    function renderTable(students) {
+      let table = document.getElementById("studentTable").getElementsByTagName("tbody")[0];
+      table.innerHTML = "";
+      students.forEach((student, index) => {
+        let newRow = table.insertRow();
+        newRow.insertCell(0).innerText = student.name;
+        newRow.insertCell(1).innerText = student.age;
+        newRow.insertCell(2).innerText = student.gender;
+        newRow.insertCell(3).innerText = student.cls;
+        newRow.insertCell(4).innerText = student.parent;
+        newRow.insertCell(5).innerText = student.contact;
+        newRow.insertCell(6).innerText = student.address;
+        let actionCell = newRow.insertCell(7);
+        actionCell.innerHTML = `
+          <button class="action-btn edit-btn" onclick="editStudent(${index})">Edit</button>
+          <button class="action-btn delete-btn" onclick="deleteStudent(${index})">Delete</button>
+        `;
+      });
+    }
+
+    // Register or Update student
+    function registerStudent(event) {
+      event.preventDefault();
+
+      let name = document.getElementById("studentName").value;
+      let age = document.getElementById("age").value;
+      let gender = document.getElementById("gender").value;
+      let cls = document.getElementById("class").value;
+      let parent = document.getElementById("parent").value;
+      let contact = document.getElementById("contact").value;
+      let address = document.getElementById("address").value;
+      let editIndex = document.getElementById("editIndex").value;
+
+      let students = JSON.parse(localStorage.getItem("students")) || [];
+
+      if(editIndex === "") {
+        students.push({ name, age, gender, cls, parent, contact, address });
+        alert("Registration Successful!");
+      } else {
+        students[editIndex] = { name, age, gender, cls, parent, contact, address };
+        alert("Record Updated!");
+        document.getElementById("submitBtn").innerText = "Register";
+        document.getElementById("editIndex").value = "";
+      }
+
+      saveStudents(students);
+      renderTable(students);
+
+      document.querySelector("#dashboard form").reset();
+      return false;
+    }
+
+    // Delete student
+    function deleteStudent(index) {
+      if(confirm("Are you sure you want to delete this record?")) {
+        let students = JSON.parse(localStorage.getItem("students")) || [];
+        students.splice(index, 1);
+        saveStudents(students);
+        renderTable(students);
+      }
+    }
+
+    // Edit student
+    function editStudent(index) {
+      let students = JSON.parse(localStorage.getItem("students")) || [];
+      let student = students[index];
+
+      document.getElementById("studentName").value = student.name;
+      document.getElementById("age").value = student.age;
+      document.getElementById("gender").value = student.gender;
+      document.getElementById("class").value = student.cls;
+      document.getElementById("parent").value = student.parent;
+      document.getElementById("contact").value = student.contact;
+      document.getElementById("address").value = student.address;
+
+      document.getElementById("submitBtn").innerText = "Update";
+      document.getElementById("editIndex").value = index;
+    }
+
+    // Search students
+    function searchStudent() {
+      let filter = document.getElementById("searchInput").value.toLowerCase();
+      let students = JSON.parse(localStorage.getItem("students")) || [];
+      let filtered = students.filter(s => 
+        s.name.toLowerCase().includes(filter) || 
+        s.cls.toLowerCase().includes(filter)
+      );
+      renderTable(filtered);
+    }
+
+    // Export to CSV
+    function exportCSV() {
+      let students = JSON.parse(localStorage.getItem("students")) || [];
+      if(students.length === 0) {
+        alert("No data to export!");
+        return;
+      }
+
+      let csvContent = "data:text/csv;charset=utf-8," 
+        + ["Name,Age,Gender,Class,Parent,Contact,Address"].join(",") + "\n"
+        + students.map(s => 
+            `${s.name},${s.age},${s.gender},${s.cls},${s.parent},${s.contact},${s.address}`
+          ).join("\n");
+
+      let encodedUri = encodeURI(csvContent);
+      let link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", "students_data.csv");
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  </script>
+</body>
+</html>
