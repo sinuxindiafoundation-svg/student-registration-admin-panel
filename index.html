@@ -32,9 +32,8 @@ th { background:#007bff; color:white; }
 <body>
 
 <header>
-  <img src="https://imgbb.com/"><img src="https://i.ibb.co/W4CT328M/sinux112.png" alt="Logo">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/Logo_example.png" alt="Logo">
   <h1>Sinux India Center</h1>
-  
   <button id="logoutBtn" onclick="logout()">Logout</button>
 </header>
 
@@ -132,7 +131,7 @@ function renderTable(students){
     newRow.insertCell(4).innerText=student.parent;
     newRow.insertCell(5).innerText=student.contact;
     newRow.insertCell(6).innerText=student.address;
-    let actionCell=newRow.insertCell(8);
+    let actionCell=newRow.insertCell(7);
     actionCell.innerHTML=`<button class="action-btn edit-btn" onclick="editStudent(${index})">Edit</button>
                           <button class="action-btn delete-btn" onclick="deleteStudent(${index})">Delete</button>`;
   });
@@ -198,5 +197,3 @@ function updateSummary(){
 
 </body>
 </html>
-
-
