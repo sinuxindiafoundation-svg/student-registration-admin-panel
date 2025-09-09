@@ -103,12 +103,12 @@
 </head>
 <body>
   <header>
-    <h1>Admin Panel</h1>
+    <h1>Sinux India Center</h1>
   </header>
 
   <!-- Login Section -->
   <div class="container" id="login-box">
-    <h2>Admin Login</h2>
+    <h2>Center Login</h2>
     <form onsubmit="return loginAdmin(event)">
       <input type="text" id="username" placeholder="Username" required>
       <input type="password" id="password" placeholder="Password" required>
@@ -244,6 +244,7 @@
         newRow.insertCell(4).innerText = student.parent;
         newRow.insertCell(5).innerText = student.contact;
         newRow.insertCell(6).innerText = student.address;
+        newRow.insertCell(6).innerText = student.Center Name;
         let actionCell = newRow.insertCell(7);
         actionCell.innerHTML = `
           <button class="action-btn edit-btn" onclick="editStudent(${index})">Edit</button>
@@ -347,5 +348,6 @@
   </script>
 </body>
 </html>
+
 
 
