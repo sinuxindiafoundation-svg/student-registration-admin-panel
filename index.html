@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Center Login & Student Registration</title>
+  <title>center Login & Student Registration</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -195,7 +195,7 @@
           <th>Parent</th>
           <th>Contact</th>
           <th>Address</th>
-          <th>Center Name</th>
+          <th>centerName</th>
           <th>Actions</th>
         </tr>
       </thead>
@@ -244,7 +244,7 @@
         newRow.insertCell(4).innerText = student.parent;
         newRow.insertCell(5).innerText = student.contact;
         newRow.insertCell(6).innerText = student.address;
-        newRow.insertCell(7).innerText = student.Center Name;
+        newRow.insertCell(7).innerText = student.centerName;
         let actionCell = newRow.insertCell(8);
         actionCell.innerHTML = `
           <button class="action-btn edit-btn" onclick="editStudent(${index})">Edit</button>
@@ -264,15 +264,16 @@
       let parent = document.getElementById("parent").value;
       let contact = document.getElementById("contact").value;
       let address = document.getElementById("address").value;
+      let CenterName = document.getElementById("centerName").value;
       let editIndex = document.getElementById("editIndex").value;
 
       let students = JSON.parse(localStorage.getItem("students")) || [];
 
       if(editIndex === "") {
-        students.push({ name, age, gender, cls, parent, contact, address });
+        students.push({ name, age, gender, cls, parent, contact, address, centerName });
         alert("Registration Successful!");
       } else {
-        students[editIndex] = { name, age, gender, cls, parent, contact, address };
+        students[editIndex] = { name, age, gender, cls, parent, contact, address, centerName };
         alert("Record Updated!");
         document.getElementById("submitBtn").innerText = "Register";
         document.getElementById("editIndex").value = "";
@@ -332,9 +333,9 @@
       }
 
       let csvContent = "data:text/csv;charset=utf-8," 
-        + ["Name,Age,Gender,Class,Parent,Contact,Address"].join(",") + "\n"
+        + ["Name,Age,Gender,Class,Parent,Contact,Address,CenterName"].join(",") + "\n"
         + students.map(s => 
-            `${s.name},${s.age},${s.gender},${s.cls},${s.parent},${s.contact},${s.address}`
+            `${s.name},${s.age},${s.gender},${s.cls},${s.parent},${s.contact},${s.address},${s.centerName}`
           ).join("\n");
 
       let encodedUri = encodeURI(csvContent);
@@ -348,6 +349,7 @@
   </script>
 </body>
 </html>
+
 
 
 
