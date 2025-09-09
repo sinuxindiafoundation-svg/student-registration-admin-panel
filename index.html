@@ -244,8 +244,8 @@
         newRow.insertCell(4).innerText = student.parent;
         newRow.insertCell(5).innerText = student.contact;
         newRow.insertCell(6).innerText = student.address;
-        newRow.insertCell(6).innerText = student.Center Name;
-        let actionCell = newRow.insertCell(7);
+        newRow.insertCell(7).innerText = student.Center Name;
+        let actionCell = newRow.insertCell(8);
         actionCell.innerHTML = `
           <button class="action-btn edit-btn" onclick="editStudent(${index})">Edit</button>
           <button class="action-btn delete-btn" onclick="deleteStudent(${index})">Delete</button>
@@ -348,6 +348,7 @@
   </script>
 </body>
 </html>
+
 
 
 
