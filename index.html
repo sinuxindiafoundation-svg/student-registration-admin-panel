@@ -6,10 +6,12 @@
 <title>Sinux India Center</title>
 <style>
 body { font-family: Arial, sans-serif; margin: 0; background: #f8f9fa; }
-header { background: #007bff; color: white; padding: 10px; text-align: center; position: relative; display: flex; align-items: center; justify-content: center; }
+header { background: #007bff; color: white; padding: 10px; display: flex; align-items: center; justify-content: center; }
 header img { height: 50px; margin-right: 15px; }
-header h1 { margin:0; }
-#logoutBtn { position: absolute; right: 15px; top: 15px; background: #dc3545; border: none; padding: 8px 12px; color: white; cursor: pointer; border-radius: 4px; }
+.title-box { display: flex; flex-direction: column; align-items: flex-start; }
+header h1 { margin: 0; font-size: 24px; }
+#logoutBtn { margin-top: 5px; font-size: 12px; padding: 4px 8px; background: #dc3545; border: none; color: white; border-radius: 4px; cursor: pointer; align-self: flex-start; }
+#logoutBtn:hover { background: #a71d2a; }
 .container { width: 350px; margin: 50px auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
 h2 { text-align:center; margin-bottom:20px; }
 input, select, textarea, button { width:100%; padding:10px; margin:8px 0; border:1px solid #ccc; border-radius:5px; }
@@ -32,11 +34,9 @@ th { background:#007bff; color:white; }
 <body>
 
 <header>
-  <div class="header-top">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/Logo_example.png" alt="Logo">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/Logo_example.png" alt="Logo">
+  <div class="title-box">
     <h1>Sinux India Center</h1>
-  </div>
-    <div class="logout-box">
     <button id="logoutBtn" onclick="logout()">Logout</button>
   </div>
 </header>
@@ -52,8 +52,6 @@ th { background:#007bff; color:white; }
       <option>Mumbai</option>
       <option>Bangalore</option>
       <option>Chennai</option>
-      <option>Padriya Tula</option>
-      <option>ramdin</option>
     </select>
     <input type="text" id="username" placeholder="Username" required>
     <input type="password" id="password" placeholder="Password" required>
@@ -120,10 +118,10 @@ function loginCenter(event){
   return false;
 }
 
-function logout(){if(confirm("Logout?")) location.reload();}
+function logout(){ if(confirm("Logout?")) location.reload(); }
 
-function getStudents(){let allData=JSON.parse(localStorage.getItem("allCenters"))||{};return allData[currentCenter]||[];}
-function saveStudents(data){let allData=JSON.parse(localStorage.getItem("allCenters"))||{};allData[currentCenter]=data;localStorage.setItem("allCenters",JSON.stringify(allData));}
+function getStudents(){ let allData=JSON.parse(localStorage.getItem("allCenters"))||{}; return allData[currentCenter]||[]; }
+function saveStudents(data){ let allData=JSON.parse(localStorage.getItem("allCenters"))||{}; allData[currentCenter]=data; localStorage.setItem("allCenters",JSON.stringify(allData)); }
 
 function renderTable(students){
   let table=document.getElementById("studentTable").getElementsByTagName("tbody")[0];
@@ -143,7 +141,7 @@ function renderTable(students){
   });
 }
 
-function loadStudents(){renderTable(getStudents());updateSummary();}
+function loadStudents(){ renderTable(getStudents()); updateSummary(); }
 
 function registerStudent(event){
   event.preventDefault();
@@ -156,14 +154,13 @@ function registerStudent(event){
   let address=document.getElementById("address").value;
   let editIndex=document.getElementById("editIndex").value;
   let students=getStudents();
-  if(editIndex===""){students.push({name,age,gender,cls,parent,contact,address});alert("Registration Successful!");}
-  else{students[editIndex]={name,age,gender,cls,parent,contact,address};alert("Record Updated!");document.getElementById("submitBtn").innerText="Register";document.getElementById("editIndex").value="";}
-  saveStudents(students);renderTable(students);document.querySelector("#dashboard form").reset();updateSummary();
+  if(editIndex===""){ students.push({name,age,gender,cls,parent,contact,address}); alert("Registration Successful!"); }
+  else{ students[editIndex]={name,age,gender,cls,parent,contact,address}; alert("Record Updated!"); document.getElementById("submitBtn").innerText="Register"; document.getElementById("editIndex").value=""; }
+  saveStudents(students); renderTable(students); document.querySelector("#dashboard form").reset(); updateSummary();
 }
 
 function editStudent(index){
-  let students=getStudents();
-  let student=students[index];
+  let students=getStudents(); let student=students[index];
   document.getElementById("studentName").value=student.name;
   document.getElementById("age").value=student.age;
   document.getElementById("gender").value=student.gender;
@@ -175,7 +172,7 @@ function editStudent(index){
   document.getElementById("editIndex").value=index;
 }
 
-function deleteStudent(index){if(confirm("Delete this record?")){let students=getStudents();students.splice(index,1);saveStudents(students);renderTable(students);updateSummary();}}
+function deleteStudent(index){ if(confirm("Delete this record?")){ let students=getStudents(); students.splice(index,1); saveStudents(students); renderTable(students); updateSummary(); } }
 
 function searchStudent(){
   let filter=document.getElementById("searchInput").value.toLowerCase();
@@ -184,31 +181,19 @@ function searchStudent(){
 }
 
 function exportCSV(){
-  let students=getStudents();
-  if(students.length===0){alert("No data to export!");return;}
+  let students=getStudents(); if(students.length===0){alert("No data to export!"); return;}
   let csvContent="data:text/csv;charset=utf-8,"+["Name,Age,Gender,Class,Parent,Contact,Address"].join(",")+"\n"+students.map(s=>`${s.name},${s.age},${s.gender},${s.cls},${s.parent},${s.contact},${s.address}`).join("\n");
-  let encodedUri=encodeURI(csvContent);
-  let link=document.createElement("a");link.setAttribute("href",encodedUri);link.setAttribute("download",`${currentCenter}_students.csv`);document.body.appendChild(link);link.click();document.body.removeChild(link);
+  let encodedUri=encodeURI(csvContent); let link=document.createElement("a"); link.setAttribute("href",encodedUri); link.setAttribute("download",`${currentCenter}_students.csv`); document.body.appendChild(link); link.click(); document.body.removeChild(link);
 }
 
-function printTable(){let table=document.getElementById("studentTable").outerHTML;let newWin=window.open("");newWin.document.write(`<h2>${currentCenter} Students</h2>${table}`);newWin.print();newWin.close();}
+function printTable(){ let table=document.getElementById("studentTable").outerHTML; let newWin=window.open(""); newWin.document.write(`<h2>${currentCenter} Students</h2>${table}`); newWin.print(); newWin.close(); }
 
 function updateSummary(){
-  let allData=JSON.parse(localStorage.getItem("allCenters"))||{};
-  let summary="";
-  for(let center in allData){summary+=`<p><strong>${center}:</strong> ${allData[center].length} Students</p>`;}
+  let allData=JSON.parse(localStorage.getItem("allCenters"))||{}; let summary="";
+  for(let center in allData){ summary+=`<p><strong>${center}:</strong> ${allData[center].length} Students</p>`; }
   document.getElementById("summaryBox").innerHTML=summary;
 }
 </script>
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
