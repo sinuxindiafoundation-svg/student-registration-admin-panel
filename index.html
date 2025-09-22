@@ -15,7 +15,6 @@ header img{height:48px}
 header h1{margin:0;font-size:20px}
 .logout-btn{background:#dc3545;padding:6px 10px;border:none;border-radius:6px;color:white;cursor:pointer}
 .wrap{max-width:1100px;margin:18px auto;padding:8px}
-.card{background:white;border-radius:8px;padding:14px;box-shadow:0 6px 18px rgba(0,0,0,.06);margin-bottom:14px}
 .nav{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
 .nav button{padding:8px 12px;border-radius:6px;border:1px solid #e0e0e0;background:white;cursor:pointer}
 .nav button.active{background:var(--blue);color:white;border-color:var(--blue)}
@@ -37,16 +36,12 @@ th{background:var(--blue);color:white}
 </head>
 <body>
 
-<!-- Login Page -->
 <div id="loginPage" class="login-box">
   <h2>Sinux India Login</h2>
-  <p class="hint">
-    Login as <b>Admin</b>, <b>Center</b>, or <b>Teacher</b> using your credentials.<br>
-    <span style="font-size:12px;color:#777;">
-      Default: Admin → admin/admin, Center → center/center123, Teacher → teacher/teacher123
-    </span>
+  <p class="hint">Login as <b>Admin</b>, <b>Center</b>, or <b>Teacher</b>.<br>
+    <span style="font-size:12px;color:#777;">Default: Admin → admin/admin, Center → center/center123, Teacher → teacher/teacher123</span>
   </p>
-  <form onsubmit="return login(event)">
+  <form id="loginForm">
     <label>Username</label>
     <input id="loginUser" placeholder="Enter username" required />
     <label>Password</label>
@@ -55,7 +50,6 @@ th{background:var(--blue);color:white}
   </form>
 </div>
 
-<!-- Main Panel -->
 <div id="mainPanel" style="display:none">
   <header>
     <div class="header-left">
@@ -81,41 +75,40 @@ th{background:var(--blue);color:white}
 
 <script>
 const FEE_PER_STUDENT=100;
-let centers=[],currentCenter=0,role="",currentTeacher=null;
+let centers=[], currentCenter=0, role="", currentTeacher=null;
 
-// Default seed
 function seedData(){
   centers=JSON.parse(localStorage.getItem('centers')||'[]');
   if(!centers.length){
     centers.push({
-      name:'Default Center',
-      username:'center', password:'center123',
-      students:[],
+      name:'Default Center', username:'center', password:'center123',
+      students:[{name:'Student1',dob:'2005-01-01',gender:'Male',cls:'10',parent:'Parent1',contact:'9999999999',address:'Address1',paid:false}],
       teachers:[{name:'Default Teacher',username:'teacher',password:'teacher123',salary:20000}]
     });
     localStorage.setItem('centers',JSON.stringify(centers));
   }
 }
 
-// Login
 function login(e){
   e.preventDefault();
+  seedData();
   const u=document.getElementById('loginUser').value.trim();
   const p=document.getElementById('loginPass').value.trim();
-  seedData();
 
-  if(u==='admin' && p==='admin'){role='admin';openPanel();return;}
+  if(u==='admin' && p==='admin'){role='admin'; openPanel(); return;}
 
   const cIndex=centers.findIndex(c=>c.username===u && c.password===p);
-  if(cIndex!==-1){role='center';currentCenter=cIndex;openPanel();return;}
+  if(cIndex!==-1){role='center'; currentCenter=cIndex; openPanel(); return;}
 
   for(let i=0;i<centers.length;i++){
     const tIndex=centers[i].teachers.findIndex(t=>t.username===u && t.password===p);
-    if(tIndex!==-1){role='teacher';currentCenter=i;currentTeacher=tIndex;openPanel();return;}
+    if(tIndex!==-1){role='teacher'; currentCenter=i; currentTeacher=tIndex; openPanel(); return;}
   }
 
   alert('Invalid username or password');
 }
+
+document.getElementById('loginForm').addEventListener('submit', login);
 
 function openPanel(){
   document.getElementById('loginPage').style.display='none';
@@ -136,84 +129,99 @@ function initPanel(){
 }
 
 function saveCenters(){localStorage.setItem('centers',JSON.stringify(centers));}
-
 function populateCenterSelect(){
   const sel=document.getElementById('centerSelect');
   sel.innerHTML='';
-  centers.forEach((c,i)=>{const opt=document.createElement('option');opt.value=i;opt.text=c.name;sel.appendChild(opt);});
+  centers.forEach((c,i)=>{const opt=document.createElement('option'); opt.value=i; opt.text=c.name; sel.appendChild(opt);});
   sel.value=currentCenter;
 }
-
-function switchCenter(){currentCenter=parseInt(document.getElementById('centerSelect').value); switchViewByName('dashboard');}
-
-function switchView(e){document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active')); e.target.classList.add('active'); switchViewByName(e.target.dataset.view);}
-
-function switchViewByName(view){
-  const vc=document.getElementById('viewContent');
-  if(view==='dashboard'){renderDashboard(); return;}
-  if(view==='students'){renderStudentsView(); return;}
-  vc.innerHTML=`<div class='card'><h2>${view} view content coming soon</h2></div>`;
+function switchCenter(){
+  currentCenter=parseInt(document.getElementById('centerSelect').value);
+  switchViewByName('dashboard');
+}
+function switchView(e){
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  e.target.classList.add('active');
+  switchViewByName(e.target.dataset.view);
 }
 
-// --- Dashboard ---
+function switchViewByName(view){
+  if(view==='dashboard'){renderDashboard(); return;}
+  if(view==='students'){renderStudentsView(); return;}
+  if(view==='fees'){renderFeesView(); return;}
+  if(view==='teachers'){renderTeachersView(); return;}
+  if(view==='reports'){renderReportsView(); return;}
+  if(view==='centers'){renderCentersView(); return;}
+  document.getElementById('viewContent').innerHTML=`<div class='card'><h2>${view} content coming soon</h2></div>`;
+}
+
 function renderDashboard(){
   const vc=document.getElementById('viewContent');
   const students=centers[currentCenter].students;
   const teachers=centers[currentCenter].teachers;
-  let totalIncome=students.filter(s=>s.paid).length*FEE_PER_STUDENT;
-  vc.innerHTML=`
-  <div class='card'><h2>Dashboard</h2>
-  <div style='display:flex;gap:12px;flex-wrap:wrap'>
-    <div class='card'>Centers: ${centers.length}</div>
-    <div class='card'>Students: ${students.length}</div>
-    <div class='card'>Teachers: ${teachers.length}</div>
-    <div class='card'>Income: ₹${totalIncome}</div>
-  </div>
-  <canvas id='dashChart' height='200'></canvas>
+  let paidIncome=students.filter(s=>s.paid).length*FEE_PER_STUDENT;
+  vc.innerHTML=`<div class='card'><h2>Dashboard</h2>
+    <div style='display:flex;gap:12px;flex-wrap:wrap'>
+      <div class='card'>Centers: ${centers.length}</div>
+      <div class='card'>Students: ${students.length}</div>
+      <div class='card'>Teachers: ${teachers.length}</div>
+      <div class='card'>Income: ₹${paidIncome}</div>
+    </div>
   </div>`;
-
-  const ctx=document.getElementById('dashChart').getContext('2d');
-  if(window.dashChart) window.dashChart.destroy();
-  window.dashChart=new Chart(ctx,{type:'bar',data:{labels:students.map(s=>s.name),datasets:[{label:'Fees Paid',data:students.map(s=>s.paid?FEE_PER_STUDENT:0),backgroundColor:'#007bff'}]},options:{responsive:true,plugins:{legend:{display:false}}}});
 }
 
-// --- Students ---
 function renderStudentsView(){
   const vc=document.getElementById('viewContent');
   const students=centers[currentCenter].students;
-  vc.innerHTML=`
-    <div class='card'>
-      <h2>Students</h2>
-      <form id='studentForm' onsubmit='return saveStudent(event)'>
-        <input type='hidden' id='studentIndex'/>
-        <label>Name</label><input id='s_name' required />
-        <label>DOB</label><input type='date' id='s_dob' required />
-        <label>Gender</label><select id='s_gender' required><option value=''>--Select--</option><option>Male</option><option>Female</option><option>Other</option></select>
-        <label>Class</label><input id='s_class' required placeholder='Class'/>
-        <label>Parent</label><input id='s_parent' required />
-        <label>Contact</label><input id='s_contact' pattern='[0-9]{10}' placeholder='10-digit' required />
-        <label>Address</label><textarea id='s_address' rows='2' required></textarea>
-        <div style='margin-top:8px;display:flex;gap:8px'><button class='primary' type='submit'>Save</button><button type='button' onclick='studentFormReset()'>Reset</button></div>
-      </form>
-    </div>
-    <div class='card'>
-      <table><thead><tr><th>#</th><th>Name</th><th>DOB</th><th>Gender</th><th>Class</th><th>Parent</th><th>Contact</th><th>Address</th><th>Actions</th></tr></thead><tbody id='studentsTable'></tbody></table>
-    </div>`;
+  vc.innerHTML=`<div class='card'>
+    <h2>Students</h2>
+    <form id='studentForm'>
+      <input type='hidden' id='studentIndex' />
+      <label>Name</label><input id='s_name' required />
+      <label>DOB</label><input type='date' id='s_dob' required />
+      <label>Gender</label><select id='s_gender' required><option value=''>--Select--</option><option>Male</option><option>Female</option><option>Other</option></select>
+      <label>Class</label><input id='s_class' required />
+      <label>Parent</label><input id='s_parent' required />
+      <label>Contact</label><input id='s_contact' pattern='[0-9]{10}' required />
+      <label>Address</label><textarea id='s_address' required></textarea>
+      <div style='margin-top:8px;display:flex;gap:8px'>
+        <button class='primary' type='submit'>Save</button>
+        <button type='button' onclick='studentFormReset()'>Reset</button>
+      </div>
+    </form>
+  </div>
+  <div class='card'>
+    <table><thead><tr><th>#</th><th>Name</th><th>DOB</th><th>Gender</th><th>Class</th><th>Parent</th><th>Contact</th><th>Address</th><th>Actions</th></tr></thead><tbody id='studentsTable'></tbody></table>
+  </div>`;
+  document.getElementById('studentForm').addEventListener('submit', saveStudent);
   renderStudentsTable();
 }
 
 function saveStudent(e){
   e.preventDefault();
   const idx=document.getElementById('studentIndex').value;
-  const s={name:document.getElementById('s_name').value,dob:document.getElementById('s_dob').value,gender:document.getElementById('s_gender').value,cls:document.getElementById('s_class').value,parent:document.getElementById('s_parent').value,contact:document.getElementById('s_contact').value,address:document.getElementById('s_address').value,paid:false};
-  if(idx===''){centers[currentCenter].students.push(s);}else{centers[currentCenter].students[parseInt(idx)]=s;}
+  const s={
+    name:document.getElementById('s_name').value,
+    dob:document.getElementById('s_dob').value,
+    gender:document.getElementById('s_gender').value,
+    cls:document.getElementById('s_class').value,
+    parent:document.getElementById('s_parent').value,
+    contact:document.getElementById('s_contact').value,
+    address:document.getElementById('s_address').value,
+    paid:false
+  };
+  if(idx===''){centers[currentCenter].students.push(s);} else {centers[currentCenter].students[parseInt(idx)]=s;}
   saveCenters(); studentFormReset(); renderStudentsTable();
 }
 
 function renderStudentsTable(){
-  const students=centers[currentCenter].students;
-  const tbody=document.getElementById('studentsTable'); tbody.innerHTML='';
-  students.forEach((s,i)=>{const tr=document.createElement('tr'); tr.innerHTML=`<td>${i+1}</td><td>${s.name}</td><td>${s.dob}</td><td>${s.gender}</td><td>${s.cls}</td><td>${s.parent}</td><td>${s.contact}</td><td>${s.address}</td><td><button class='action-btn edit-btn' onclick='editStudent(${i})'>Edit</button> <button class='action-btn del-btn' onclick='deleteStudent(${i})'>Delete</button></td>`; tbody.appendChild(tr);});
+  const tbody=document.getElementById('studentsTable');
+  tbody.innerHTML='';
+  centers[currentCenter].students.forEach((s,i)=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${i+1}</td><td>${s.name}</td><td>${s.dob}</td><td>${s.gender}</td><td>${s.cls}</td><td>${s.parent}</td><td>${s.contact}</td><td>${s.address}</td><td><button class='action-btn edit-btn' onclick='editStudent(${i})'>Edit</button> <button class='action-btn del-btn' onclick='deleteStudent(${i})'>Delete</button></td>`;
+    tbody.appendChild(tr);
+  });
 }
 
 function editStudent(i){
@@ -228,8 +236,20 @@ function editStudent(i){
   document.getElementById('s_address').value=s.address;
 }
 
-function deleteStudent(i){if(confirm('Delete?')){centers[currentCenter].students.splice(i,1);saveCenters();renderStudentsTable();}}
-function studentFormReset(){document.getElementById('studentIndex').value='';document.getElementById('studentForm').reset();}
+function deleteStudent(i){
+  if(confirm('Delete?')){centers[currentCenter].students.splice(i,1); saveCenters(); renderStudentsTable();}
+}
+
+function studentFormReset(){
+  document.getElementById('studentIndex').value='';
+  if(document.getElementById('studentForm')) document.getElementById('studentForm').reset();
+}
+
+// Placeholder functions for other views
+function renderFeesView(){document.getElementById('viewContent').innerHTML='<div class="card"><h2>Fees Management</h2></div>'}
+function renderTeachersView(){document.getElementById('viewContent').innerHTML='<div class="card"><h2>Teachers Management</h2></div>'}
+function renderReportsView(){document.getElementById('viewContent').innerHTML='<div class="card"><h2>Reports</h2></div>'}
+function renderCentersView(){document.getElementById('viewContent').innerHTML='<div class="card"><h2>Centers Management</h2></div>'}
 </script>
 
 </body>
