@@ -24,209 +24,136 @@
   label{display:block;margin:8px 0 4px}
   input,select,textarea{width:100%;padding:8px;border:1px solid #ccc;border-radius:6px;box-sizing:border-box}
   button.primary{background:var(--blue);color:white;padding:10px;border:none;border-radius:6px;cursor:pointer}
-  .small{font-size:13px;color:#555}
-  table{width:100%;border-collapse:collapse}
-  th,td{padding:8px;border:1px solid #e6e6e6;text-align:center;font-size:14px}
-  th{background:var(--blue);color:white}
-  .action-btn{padding:6px 8px;border-radius:6px;border:none;color:white;cursor:pointer}
-  .edit-btn{background:#28a745}
-  .del-btn{background:#dc3545}
-  .pay-btn{background:#17a2b8}
-  .top-cards{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:10px}
-  .top-card{flex:1;min-width:180px;background:white;padding:12px;border-radius:6px;box-shadow:0 3px 8px rgba(0,0,0,0.08)}
-  .muted{color:#666;font-size:13px}
-  .search-row{display:flex;gap:8px;align-items:center}
-  .controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-  .small-btn{padding:6px 8px;border-radius:6px;border:none;background:#6c757d;color:white;cursor:pointer}
   .login-box{max-width:400px;margin:80px auto;padding:24px;background:white;border-radius:10px;box-shadow:0 6px 18px rgba(0,0,0,.1);}
-  .login-box h2{text-align:center;margin-bottom:20px;}
-  @media(max-width:800px){.flex{flex-direction:column;align-items:stretch}}
+  .login-box h2{text-align:center;margin-bottom:10px;}
+  .hint{text-align:center;font-size:13px;color:#666;margin-bottom:16px;line-height:1.4}
 </style>
 </head>
 <body>
 
+<!-- Login Page -->
 <div id="loginPage" class="login-box">
   <h2>Sinux India Login</h2>
+  <p class="hint">
+    Login as <b>Admin</b>, <b>Center</b>, or <b>Teacher</b> using your credentials.<br>
+    <span style="font-size:12px;color:#777;">
+      Default: Admin → admin/admin, Center → center1/1234, Teacher → teacher1/1234
+    </span>
+  </p>
   <form onsubmit="return login(event)">
-    <label>Username</label><input id="loginUser" required />
-    <label>Password</label><input type="password" id="loginPass" required />
+    <label>Username</label>
+    <input id="loginUser" placeholder="Enter username" required />
+    <label>Password</label>
+    <input type="password" id="loginPass" placeholder="Enter password" required />
     <button class="primary" type="submit" style="margin-top:12px;width:100%">Login</button>
   </form>
 </div>
 
+<!-- Main Panel -->
 <div id="mainPanel" style="display:none">
-<header>
-  <div class="header-left">
-    <img src="https://i.ibb.co/SDcNt5kB/sinux112.png" alt="Logo">
-    <div class="title-box"><h1>Sinux India Center</h1></div>
-    <select id="centerSelect" onchange="switchCenter()" style="margin-left:20px;padding:6px;border-radius:6px;">
-    </select>
-  </div>
-  <button class="logout-btn" onclick="logout()">Logout</button>
-</header>
-
-<div class="wrap">
-  <div class="nav card">
-    <button class="nav-btn active" data-view="dashboard" onclick="switchView(event)">Dashboard</button>
-    <button class="nav-btn" data-view="students" onclick="switchView(event)">Students</button>
-    <button class="nav-btn" data-view="fees" onclick="switchView(event)">Fees</button>
-    <button class="nav-btn" data-view="teachers" onclick="switchView(event)">Teachers</button>
-    <button class="nav-btn" data-view="reports" onclick="switchView(event)">Reports</button>
-    <button class="nav-btn" data-view="centers" onclick="switchView(event)">Centers</button>
-  </div>
-
-  <!-- DASHBOARD -->
-  <div id="view-dashboard" class="card">
-    <div class="top-cards">
-      <div class="top-card"><h3 id="card-centers">0</h3><div class="muted">Total Centers</div></div>
-      <div class="top-card"><h3 id="card-students">0</h3><div class="muted">Total Students</div></div>
-      <div class="top-card"><h3 id="card-income">₹0</h3><div class="muted">Monthly Income</div></div>
-      <div class="top-card"><h3 id="card-teachers">0</h3><div class="muted">Total Teachers</div></div>
+  <header>
+    <div class="header-left">
+      <img src="https://i.ibb.co/SDcNt5kB/sinux112.png" alt="Logo">
+      <div class="title-box"><h1>Sinux India Center</h1></div>
+      <select id="centerSelect" onchange="switchCenter()" style="margin-left:20px;padding:6px;border-radius:6px;"></select>
     </div>
-    <canvas id="centerChart" height="200"></canvas>
-  </div>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </header>
 
-  <!-- STUDENTS -->
-  <div id="view-students" class="card" style="display:none">
-    <h2>Students</h2>
-    <div class="card form-box">
-      <form id="studentForm" onsubmit="return saveStudent(event)">
-        <input type="hidden" id="studentIndex" />
-        <label>Name</label><input id="s_name" required />
-        <label>Date of Birth</label><input id="s_dob" type="date" required />
-        <label>Gender</label>
-        <select id="s_gender" required><option value="">--Select--</option><option>Male</option><option>Female</option><option>Other</option></select>
-        <label>Class</label><input id="s_class" required placeholder="Class"/>
-        <label>Parent/Guardian</label><input id="s_parent" required />
-        <label>Contact</label><input id="s_contact" pattern="[0-9]{10}" placeholder="10-digit" required />
-        <label>Address</label><textarea id="s_address" rows="2" required></textarea>
-        <div style="margin-top:8px;display:flex;gap:8px">
-          <button class="primary" type="submit">Save</button>
-          <button type="button" onclick="studentFormReset()">Reset</button>
-          <button type="button" onclick="exportStudentsCSV()" class="small-btn">Export CSV</button>
-          <button type="button" onclick="printStudents()" class="small-btn">Print</button>
-        </div>
-      </form>
+  <div class="wrap">
+    <div class="nav card">
+      <button class="nav-btn active" data-view="dashboard" onclick="switchView(event)">Dashboard</button>
+      <button class="nav-btn" data-view="students" onclick="switchView(event)">Students</button>
+      <button class="nav-btn" data-view="fees" onclick="switchView(event)">Fees</button>
+      <button class="nav-btn" data-view="teachers" onclick="switchView(event)">Teachers</button>
+      <button class="nav-btn" data-view="reports" onclick="switchView(event)">Reports</button>
+      <button class="nav-btn" data-view="centers" onclick="switchView(event)">Centers</button>
     </div>
-    <div style="margin-top:12px" class="card">
-      <table id="studentsTable"><thead><tr><th>#</th><th>Name</th><th>DOB</th><th>Gender</th><th>Class</th><th>Parent</th><th>Contact</th><th>Address</th><th>Actions</th></tr></thead><tbody></tbody></table>
-    </div>
+    <div id="viewContent"></div>
   </div>
-
-  <!-- FEES -->
-  <div id="view-fees" class="card" style="display:none">
-    <h2>Fees Management (₹100/month)</h2>
-    <div style="margin-top:12px" class="card">
-      <table id="feesTable"><thead><tr><th>#</th><th>Name</th><th>Contact</th><th>Amount</th><th>Status</th><th>Action</th></tr></thead><tbody></tbody></table>
-    </div>
-  </div>
-
-  <!-- TEACHERS -->
-  <div id="view-teachers" class="card" style="display:none">
-    <h2>Teachers</h2>
-    <div class="card form-box">
-      <form id="teacherForm" onsubmit="return saveTeacher(event)">
-        <input type="hidden" id="teacherIndex" />
-        <label>Name</label><input id="t_name" required/>
-        <label>Salary</label><input id="t_salary" type="number" min="0" required/>
-        <div style="margin-top:8px;display:flex;gap:8px">
-          <button class="primary" type="submit">Save</button>
-          <button type="button" onclick="teacherFormReset()">Reset</button>
-          <button type="button" onclick="exportTeachersCSV()" class="small-btn">Export CSV</button>
-        </div>
-      </form>
-    </div>
-    <div class="card" style="margin-top:12px">
-      <table id="teachersTable"><thead><tr><th>#</th><th>Name</th><th>Salary</th><th>Action</th></tr></thead><tbody></tbody></table>
-    </div>
-  </div>
-
-  <!-- REPORTS -->
-  <div id="view-reports" class="card" style="display:none">
-    <h2>Reports</h2>
-    <canvas id="incomeChart" height="200"></canvas>
-  </div>
-
-  <!-- CENTERS -->
-  <div id="view-centers" class="card" style="display:none">
-    <h2>Centers</h2>
-    <div class="card form-box">
-      <form id="centerForm" onsubmit="return saveCenter(event)">
-        <input type="hidden" id="centerIndex"/>
-        <label>Center Name</label><input id="c_name" required/>
-        <div style="margin-top:8px;display:flex;gap:8px">
-          <button class="primary" type="submit">Save</button>
-          <button type="button" onclick="centerFormReset()">Reset</button>
-        </div>
-      </form>
-    </div>
-    <div class="card" style="margin-top:12px">
-      <table id="centersTable"><thead><tr><th>#</th><th>Name</th><th>Action</th></tr></thead><tbody></tbody></table>
-    </div>
-  </div>
-
 </div>
 
 <script>
-const FEE_PER_STUDENT = 100;
-let centers=[],currentCenter=0;
+const FEE_PER_STUDENT=100;
+let centers=[],currentCenter=0,role="",currentTeacher=null;
 
-// Login
-function login(e){e.preventDefault(); const u=document.getElementById('loginUser').value; const p=document.getElementById('loginPass').value;
-if(u==='admin' && p==='admin'){document.getElementById('loginPage').style.display='none';document.getElementById('mainPanel').style.display='block'; init();}else{alert('Invalid username or password');} }
-function logout(){document.getElementById('mainPanel').style.display='none';document.getElementById('loginPage').style.display='block';}
+// Login Function
+function login(e){
+  e.preventDefault();
+  const u=document.getElementById('loginUser').value.trim();
+  const p=document.getElementById('loginPass').value.trim();
 
-// Center Management
-function saveCenter(e){e.preventDefault(); const idx=document.getElementById('centerIndex').value; const name=document.getElementById('c_name').value;
-if(idx===''){centers.push({name,students:[],teachers:[]});}else{centers[parseInt(idx)].name=name;}
-localStorage.setItem('centers',JSON.stringify(centers)); centerFormReset(); renderCenters(); populateCenterSelect(); renderDashboard();}
-function centerFormReset(){document.getElementById('centerIndex').value='';document.getElementById('centerForm').reset();}
-function renderCenters(){centers=JSON.parse(localStorage.getItem('centers')||'[]'); const tbody=document.querySelector('#centersTable tbody');tbody.innerHTML='';centers.forEach((c,i)=>{const tr=document.createElement('tr');tr.innerHTML=`<td>${i+1}</td><td>${c.name}</td><td><button class="action-btn edit-btn" onclick="editCenter(${i})">Edit</button> <button class="action-btn del-btn" onclick="deleteCenter(${i})">Delete</button></td>`;tbody.appendChild(tr);});}
-function editCenter(i){document.getElementById('centerIndex').value=i;document.getElementById('c_name').value=centers[i].name;}
-function deleteCenter(i){if(confirm('Delete?')){centers.splice(i,1);localStorage.setItem('centers',JSON.stringify(centers)); renderCenters(); populateCenterSelect(); if(currentCenter>=centers.length) currentCenter=0; renderDashboard();}}
+  // Admin
+  if(u==='admin' && p==='admin'){
+    role="admin";
+    openPanel();
+    return;
+  }
 
-// Center Select
-function populateCenterSelect(){const sel=document.getElementById('centerSelect');sel.innerHTML='';centers.forEach((c,i)=>{const opt=document.createElement('option');opt.value=i;opt.text=c.name;sel.appendChild(opt);}); sel.value=currentCenter;}
-function switchCenter(){currentCenter=parseInt(document.getElementById('centerSelect').value);renderDashboard();renderStudents();renderTeachers();renderFees();renderReports();}
+  // Load centers
+  centers=JSON.parse(localStorage.getItem('centers')||'[]');
 
-// Navigation
-function switchView(e){document.querySelectorAll('[id^="view-"]').forEach(v=>v.style.display='none');document.getElementById('view-'+e.currentTarget.dataset.view).style.display='block';document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active')); e.currentTarget.classList.add('active'); renderDashboard();renderStudents();renderTeachers();renderFees();renderReports();renderCenters();}
+  // Default seeding
+  if(!centers.length){
+    centers.push({name:'Default Center',username:'center1',password:'1234',students:[],teachers:[{name:'Default Teacher',username:'teacher1',password:'1234',salary:20000}]});
+    saveCenters();
+  }
 
-// Student
-function saveStudent(e){e.preventDefault(); const idx=document.getElementById('studentIndex').value; const s={name:document.getElementById('s_name').value,dob:document.getElementById('s_dob').value,gender:document.getElementById('s_gender').value,cls:document.getElementById('s_class').value,parent:document.getElementById('s_parent').value,contact:document.getElementById('s_contact').value,address:document.getElementById('s_address').value,paid:false}; if(idx===''){centers[currentCenter].students.push(s);}else{centers[currentCenter].students[parseInt(idx)]=s;} saveCenters(); studentFormReset(); renderStudents(); renderDashboard();}
-function studentFormReset(){document.getElementById('studentIndex').value='';document.getElementById('studentForm').reset();}
-function renderStudents(){centers=JSON.parse(localStorage.getItem('centers')||'[]'); if(!centers[currentCenter]) return; const students=centers[currentCenter].students; const tbody=document.querySelector('#studentsTable tbody');tbody.innerHTML='';students.forEach((s,i)=>{const tr=document.createElement('tr');tr.innerHTML=`<td>${i+1}</td><td>${s.name}</td><td>${s.dob}</td><td>${s.gender}</td><td>${s.cls}</td><td>${s.parent}</td><td>${s.contact}</td><td>${s.address}</td><td><button class="action-btn edit-btn" onclick="editStudent(${i})">Edit</button> <button class="action-btn del-btn" onclick="deleteStudent(${i})">Delete</button></td>`;tbody.appendChild(tr);});}
-function editStudent(i){const s=centers[currentCenter].students[i];document.getElementById('studentIndex').value=i;document.getElementById('s_name').value=s.name;document.getElementById('s_dob').value=s.dob;document.getElementById('s_gender').value=s.gender;document.getElementById('s_class').value=s.cls;document.getElementById('s_parent').value=s.parent;document.getElementById('s_contact').value=s.contact;document.getElementById('s_address').value=s.address;}
-function deleteStudent(i){if(confirm('Delete?')){centers[currentCenter].students.splice(i,1); saveCenters(); renderStudents(); renderDashboard();}}
-function exportStudentsCSV(){const students=centers[currentCenter].students;if(!students.length){alert('No data');return;} const csv=['Name,DOB,Gender,Class,Parent,Contact,Address'].concat(students.map(s=>`${s.name},${s.dob},${s.gender},${s.cls},${s.parent},${s.contact},${s.address}`)).join('\n'); downloadData(csv,'students.csv','text/csv');}
-function printStudents(){const students=centers[currentCenter].students; let html='<h3>Students</h3><table border="1" style="border-collapse:collapse"><tr><th>#</th><th>Name</th><th>DOB</th><th>Gender</th><th>Class</th><th>Parent</th><th>Contact</th><th>Address</th></tr>';students.forEach((s,i)=>{html+=`<tr><td>${i+1}</td><td>${s.name}</td><td>${s.dob}</td><td>${s.gender}</td><td>${s.cls}</td><td>${s.parent}</td><td>${s.contact}</td><td>${s.address}</td></tr>`;}); html+='</table>'; const w=window.open(); w.document.write(html); w.document.close(); w.print();}
+  // Center Login
+  const cIndex=centers.findIndex(c=>c.username===u && c.password===p);
+  if(cIndex!==-1){
+    role="center";
+    currentCenter=cIndex;
+    openPanel();
+    return;
+  }
 
-// Teacher
-function saveTeacher(e){e.preventDefault(); const idx=document.getElementById('teacherIndex').value; const t={name:document.getElementById('t_name').value,salary:document.getElementById('t_salary').value}; if(idx===''){centers[currentCenter].teachers.push(t);}else{centers[currentCenter].teachers[parseInt(idx)]=t;} saveCenters(); teacherFormReset(); renderTeachers(); renderDashboard();}
-function teacherFormReset(){document.getElementById('teacherIndex').value='';document.getElementById('teacherForm').reset();}
-function renderTeachers(){if(!centers[currentCenter]) return; const teachers=centers[currentCenter].teachers; const tbody=document.querySelector('#teachersTable tbody');tbody.innerHTML='';teachers.forEach((t,i)=>{const tr=document.createElement('tr');tr.innerHTML=`<td>${i+1}</td><td>${t.name}</td><td>${t.salary}</td><td><button class="action-btn del-btn" onclick="deleteTeacher(${i})">Delete</button></td>`;tbody.appendChild(tr);});}
-function deleteTeacher(i){if(confirm('Delete?')){centers[currentCenter].teachers.splice(i,1);saveCenters();renderTeachers();renderDashboard();}}
-function exportTeachersCSV(){const teachers=centers[currentCenter].teachers;if(!teachers.length){alert('No data');return;} const csv=['Name,Salary'].concat(teachers.map(t=>`${t.name},${t.salary}`)).join('\n'); downloadData(csv,'teachers.csv','text/csv');}
+  // Teacher Login
+  for(let i=0;i<centers.length;i++){
+    const tIndex=centers[i].teachers.findIndex(t=>t.username===u && t.password===p);
+    if(tIndex!==-1){
+      role="teacher";
+      currentCenter=i;
+      currentTeacher=tIndex;
+      openPanel();
+      return;
+    }
+  }
 
-// Fees
-function renderFees(){if(!centers[currentCenter]) return; const students=centers[currentCenter].students; const tbody=document.querySelector('#feesTable tbody');tbody.innerHTML='';students.forEach((s,i)=>{const paid=s.paid?'Paid':'Pending'; const tr=document.createElement('tr');tr.innerHTML=`<td>${i+1}</td><td>${s.name}</td><td>${s.contact}</td><td>${FEE_PER_STUDENT}</td><td>${paid}</td><td>${s.paid?'':`<button class="action-btn pay-btn" onclick="payFee(${i})">Pay</button>`}</td>`;tbody.appendChild(tr);});}
-function payFee(i){centers[currentCenter].students[i].paid=true;saveCenters(); renderFees(); renderDashboard();}
+  alert("Invalid username or password");
+}
 
-// Dashboard
-function renderDashboard(){if(!centers[currentCenter]) return; const students=centers[currentCenter].students||[]; const teachers=centers[currentCenter].teachers||[]; document.getElementById('card-centers').innerText=centers.length; document.getElementById('card-students').innerText=students.length; document.getElementById('card-teachers').innerText=teachers.length; document.getElementById('card-income').innerText='₹'+(students.filter(s=>s.paid).length*FEE_PER_STUDENT); renderCenterChart();}
+function openPanel(){
+  document.getElementById('loginPage').style.display='none';
+  document.getElementById('mainPanel').style.display='block';
+  init();
+}
 
-// Charts
-function renderCenterChart(){if(!centers[currentCenter]) return; const students=centers[currentCenter].students||[]; const ctx=document.getElementById('centerChart').getContext('2d'); if(window.centerChart) window.centerChart.destroy(); window.centerChart=new Chart(ctx,{type:'bar',data:{labels:students.map(s=>s.name),datasets:[{label:'Fees Paid',data:students.map(s=>s.paid?FEE_PER_STUDENT:0),backgroundColor:'#007bff'}]},options:{responsive:true,plugins:{legend:{display:false}}}});}
-function renderReports(){if(!centers[currentCenter]) return; const students=centers[currentCenter].students||[]; const ctx=document.getElementById('incomeChart').getContext('2d'); if(window.incomeChart) window.incomeChart.destroy(); window.incomeChart=new Chart(ctx,{type:'line',data:{labels:students.map(s=>s.name),datasets:[{label:'Fees Paid',data:students.map(s=>s.paid?FEE_PER_STUDENT:0),borderColor:'#28a745',fill:false}]},options:{responsive:true}});}
+function logout(){
+  document.getElementById('mainPanel').style.display='none';
+  document.getElementById('loginPage').style.display='block';
+}
 
-// Helpers
+// Init after login
+function init(){
+  centers=JSON.parse(localStorage.getItem('centers')||'[]');
+  populateCenterSelect();
+  switchViewByName('dashboard');
+}
+
 function saveCenters(){localStorage.setItem('centers',JSON.stringify(centers));}
-function downloadData(data,filename,type){const a=document.createElement('a');const file=new Blob([data],{type:type});a.href=URL.createObjectURL(file);a.download=filename;a.click();}
 
-// Init
-function init(){centers=JSON.parse(localStorage.getItem('centers')||'[]'); if(!centers.length){centers.push({name:'Default Center',students:[],teachers:[]}); saveCenters();} currentCenter=0; populateCenterSelect(); renderDashboard(); renderStudents(); renderTeachers(); renderFees(); renderReports(); renderCenters();}
+function populateCenterSelect(){
+  const sel=document.getElementById('centerSelect');
+  sel.innerHTML='';
+  centers.forEach((c,i)=>{const opt=document.createElement('option');opt.value=i;opt.text=c.name;sel.appendChild(opt);});
+  sel.value=currentCenter;
+}
+
+// View switching
+function switchView(e){document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));e.target.classList.add('active');switchViewByName(e.target.dataset.view);}
+function switchViewByName(view){const vc=document.getElementById('viewContent');vc.innerHTML=`<div class='card'><h2>${view} view (content coming soon)</h2></div>`;}
 </script>
 
 </body>
 </html>
-
