@@ -6,35 +6,33 @@
 <title>Sinux India Center Panel</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
-  :root{--blue:#007bff;--dark:#343a40;--muted:#f1f3f5}
-  body{font-family:Arial,Helvetica,sans-serif;background:#f4f6f8;margin:0;color:#222}
-  header{background:var(--blue);color:white;padding:10px 16px;display:flex;align-items:center;justify-content:space-between}
-  .header-left{display:flex;align-items:center;gap:12px}
-  header img{height:48px}
-  .title-box{display:flex;flex-direction:column;align-items:flex-start}
-  header h1{margin:0;font-size:20px}
-  .logout-btn{background:#dc3545;padding:6px 10px;border:none;border-radius:6px;color:white;cursor:pointer}
-  .wrap{max-width:1100px;margin:18px auto;padding:8px}
-  .card{background:white;border-radius:8px;padding:14px;box-shadow:0 6px 18px rgba(0,0,0,.06);margin-bottom:14px}
-  .nav{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
-  .nav button{padding:8px 12px;border-radius:6px;border:1px solid #e0e0e0;background:white;cursor:pointer}
-  .nav button.active{background:var(--blue);color:white;border-color:var(--blue)}
-  h2{margin:0 0 8px 0}
-  label{display:block;margin:8px 0 4px}
-  input,select,textarea{width:100%;padding:8px;border:1px solid #ccc;border-radius:6px;box-sizing:border-box}
-  button.primary{background:var(--blue);color:white;padding:10px;border:none;border-radius:6px;cursor:pointer}
-  .login-box{max-width:420px;margin:60px auto;padding:24px;background:white;border-radius:10px;box-shadow:0 6px 18px rgba(0,0,0,.1);}
-  .login-box h2{text-align:center;margin-bottom:10px;}
-  .hint{text-align:center;font-size:13px;color:#666;margin-bottom:16px;line-height:1.4}
-  table{width:100%;border-collapse:collapse;margin-top:10px}
-  th,td{padding:8px;border:1px solid #e6e6e6;text-align:center;font-size:14px}
-  th{background:var(--blue);color:white}
-  .action-btn{padding:6px 8px;border-radius:6px;border:none;color:white;cursor:pointer}
-  .edit-btn{background:#28a745}
-  .del-btn{background:#dc3545}
-  .pay-btn{background:#17a2b8}
-  .small-btn{padding:6px 8px;border-radius:6px;border:none;background:#6c757d;color:white;cursor:pointer}
-  @media(max-width:800px){.nav{overflow:auto;padding-bottom:8px}}
+:root{--blue:#007bff;--dark:#343a40;--muted:#f1f3f5}
+body{font-family:Arial,Helvetica,sans-serif;background:#f4f6f8;margin:0;color:#222}
+header{background:var(--blue);color:white;padding:10px 16px;display:flex;align-items:center;justify-content:space-between}
+.header-left{display:flex;align-items:center;gap:12px}
+header img{height:48px}
+.title-box{display:flex;flex-direction:column;align-items:flex-start}
+header h1{margin:0;font-size:20px}
+.logout-btn{background:#dc3545;padding:6px 10px;border:none;border-radius:6px;color:white;cursor:pointer}
+.wrap{max-width:1100px;margin:18px auto;padding:8px}
+.card{background:white;border-radius:8px;padding:14px;box-shadow:0 6px 18px rgba(0,0,0,.06);margin-bottom:14px}
+.nav{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.nav button{padding:8px 12px;border-radius:6px;border:1px solid #e0e0e0;background:white;cursor:pointer}
+.nav button.active{background:var(--blue);color:white;border-color:var(--blue)}
+h2{margin:0 0 8px 0}
+label{display:block;margin:8px 0 4px}
+input,select,textarea{width:100%;padding:8px;border:1px solid #ccc;border-radius:6px;box-sizing:border-box}
+button.primary{background:var(--blue);color:white;padding:10px;border:none;border-radius:6px;cursor:pointer}
+.login-box{max-width:400px;margin:80px auto;padding:24px;background:white;border-radius:10px;box-shadow:0 6px 18px rgba(0,0,0,.1);}
+.login-box h2{text-align:center;margin-bottom:10px;}
+.hint{text-align:center;font-size:13px;color:#666;margin-bottom:16px;line-height:1.4}
+table{width:100%;border-collapse:collapse;margin-top:10px}
+th,td{padding:8px;border:1px solid #e6e6e6;text-align:center;font-size:14px}
+th{background:var(--blue);color:white}
+.action-btn{padding:6px 8px;border-radius:6px;border:none;color:white;cursor:pointer}
+.edit-btn{background:#28a745}
+.del-btn{background:#dc3545}
+.pay-btn{background:#17a2b8}
 </style>
 </head>
 <body>
@@ -45,7 +43,7 @@
   <p class="hint">
     Login as <b>Admin</b>, <b>Center</b>, or <b>Teacher</b> using your credentials.<br>
     <span style="font-size:12px;color:#777;">
-      Default: Admin → admin/admin, Center → center1/1234, Teacher → teacher1/1234
+      Default: Admin → admin/admin, Center → center/center123, Teacher → teacher/teacher123
     </span>
   </p>
   <form onsubmit="return login(event)">
@@ -63,7 +61,7 @@
     <div class="header-left">
       <img src="https://i.ibb.co/SDcNt5kB/sinux112.png" alt="Logo">
       <div class="title-box"><h1>Sinux India Center</h1></div>
-      <select id="centerSelect" onchange="onCenterChange()" style="margin-left:20px;padding:6px;border-radius:6px;"></select>
+      <select id="centerSelect" onchange="switchCenter()" style="margin-left:20px;padding:6px;border-radius:6px;"></select>
     </div>
     <button class="logout-btn" onclick="logout()">Logout</button>
   </header>
@@ -77,235 +75,161 @@
       <button class="nav-btn" data-view="reports" onclick="switchView(event)">Reports</button>
       <button class="nav-btn" data-view="centers" onclick="switchView(event)">Centers</button>
     </div>
-
     <div id="viewContent"></div>
   </div>
 </div>
 
 <script>
-const FEE_PER_STUDENT = 100;
-let centers = [], currentCenter = 0, role = '', currentTeacher = null;
-let centerChart = null, incomeChart = null;
+const FEE_PER_STUDENT=100;
+let centers=[],currentCenter=0,role="",currentTeacher=null;
 
-// --- Login ---
-function login(e){
-  e.preventDefault();
-  const u = document.getElementById('loginUser').value.trim();
-  const p = document.getElementById('loginPass').value.trim();
-
-  if(u === 'admin' && p === 'admin'){
-    role = 'admin';
-    openPanel();
-    return;
-  }
-
-  centers = JSON.parse(localStorage.getItem('centers')||'[]');
-  // seed default center + teacher if none
+// Default seed
+function seedData(){
+  centers=JSON.parse(localStorage.getItem('centers')||'[]');
   if(!centers.length){
     centers.push({
-      name:'Default Center', username:'center1', password:'1234',
+      name:'Default Center',
+      username:'center', password:'center123',
       students:[],
-      teachers:[{name:'Default Teacher', username:'teacher1', password:'1234', salary:15000}]
+      teachers:[{name:'Default Teacher',username:'teacher',password:'teacher123',salary:20000}]
     });
-    saveCenters();
+    localStorage.setItem('centers',JSON.stringify(centers));
   }
+}
 
-  // center login
-  const ci = centers.findIndex(c => c.username === u && c.password === p);
-  if(ci !== -1){ role = 'center'; currentCenter = ci; openPanel(); return; }
+// Login
+function login(e){
+  e.preventDefault();
+  const u=document.getElementById('loginUser').value.trim();
+  const p=document.getElementById('loginPass').value.trim();
+  seedData();
 
-  // teacher login
+  if(u==='admin' && p==='admin'){role='admin';openPanel();return;}
+
+  const cIndex=centers.findIndex(c=>c.username===u && c.password===p);
+  if(cIndex!==-1){role='center';currentCenter=cIndex;openPanel();return;}
+
   for(let i=0;i<centers.length;i++){
-    const ti = centers[i].teachers.findIndex(t => t.username === u && t.password === p);
-    if(ti !== -1){ role='teacher'; currentCenter=i; currentTeacher=ti; openPanel(); return; }
+    const tIndex=centers[i].teachers.findIndex(t=>t.username===u && t.password===p);
+    if(tIndex!==-1){role='teacher';currentCenter=i;currentTeacher=tIndex;openPanel();return;}
   }
 
   alert('Invalid username or password');
 }
 
-function openPanel(){ document.getElementById('loginPage').style.display='none'; document.getElementById('mainPanel').style.display='block'; init(); }
-function logout(){ role=''; currentTeacher=null; document.getElementById('mainPanel').style.display='none'; document.getElementById('loginPage').style.display='block'; }
-
-// --- Init & role UI ---
-function init(){ centers = JSON.parse(localStorage.getItem('centers')||'[]'); populateCenterSelect(); applyRoleUI(); switchViewByName('dashboard'); renderAll(); }
-function saveCenters(){ localStorage.setItem('centers', JSON.stringify(centers)); }
-
-function populateCenterSelect(){ const sel = document.getElementById('centerSelect'); sel.innerHTML=''; centers.forEach((c,i)=>{ const opt=document.createElement('option'); opt.value=i; opt.text=c.name; sel.appendChild(opt); }); sel.value = currentCenter; sel.disabled = (role !== 'admin'); }
-
-function applyRoleUI(){ // hide/show navs
-  const centersBtn = document.querySelector('.nav button[data-view="centers"]');
-  const teachersBtn = document.querySelector('.nav button[data-view="teachers"]');
-  const reportsBtn = document.querySelector('.nav button[data-view="reports"]');
-  if(role === 'admin'){ centersBtn.style.display='inline-block'; teachersBtn.style.display='inline-block'; reportsBtn.style.display='inline-block'; }
-  else if(role === 'center'){ centersBtn.style.display='none'; teachersBtn.style.display='inline-block'; reportsBtn.style.display='inline-block'; }
-  else { centersBtn.style.display='none'; teachersBtn.style.display='none'; reportsBtn.style.display='none'; }
+function openPanel(){
+  document.getElementById('loginPage').style.display='none';
+  document.getElementById('mainPanel').style.display='block';
+  initPanel();
 }
 
-function onCenterChange(){ if(role !== 'admin') return; const sel=document.getElementById('centerSelect'); const idx=parseInt(sel.value); if(!isNaN(idx)) currentCenter=idx; renderAll(); }
+function logout(){
+  document.getElementById('mainPanel').style.display='none';
+  document.getElementById('loginPage').style.display='block';
+  role=''; currentTeacher=null;
+}
 
-// --- Navigation ---
-function switchView(e){ document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active')); e.currentTarget.classList.add('active'); switchViewByName(e.currentTarget.dataset.view); }
-function switchViewByName(view){ if(view==='dashboard') renderDashboardView(); else if(view==='students') renderStudentsView(); else if(view==='fees') renderFeesView(); else if(view==='teachers') renderTeachersView(); else if(view==='reports') renderReportsView(); else if(view==='centers') renderCentersView(); }
+function initPanel(){
+  centers=JSON.parse(localStorage.getItem('centers'));
+  populateCenterSelect();
+  switchViewByName('dashboard');
+}
 
-function renderAll(){ renderDashboard(); /* charts*/ renderStudentsTableIfVisible(); renderTeachersTableIfVisible(); renderFeesTableIfVisible(); renderCentersTableIfVisible(); }
+function saveCenters(){localStorage.setItem('centers',JSON.stringify(centers));}
 
-// ----------------- DASHBOARD -----------------
-function renderDashboardView(){ const vc=document.getElementById('viewContent'); vc.innerHTML = `
-  <div class="card">
-    <div style="display:flex;gap:12px;flex-wrap:wrap">
-      <div style="flex:1;min-width:160px" class="card"><h3 id="card-centers">0</h3><div class="muted">Total Centers</div></div>
-      <div style="flex:1;min-width:160px" class="card"><h3 id="card-students">0</h3><div class="muted">Total Students</div></div>
-      <div style="flex:1;min-width:160px" class="card"><h3 id="card-income">₹0</h3><div class="muted">Income Collected</div></div>
-      <div style="flex:1;min-width:160px" class="card"><h3 id="card-teachers">0</h3><div class="muted">Total Teachers</div></div>
+function populateCenterSelect(){
+  const sel=document.getElementById('centerSelect');
+  sel.innerHTML='';
+  centers.forEach((c,i)=>{const opt=document.createElement('option');opt.value=i;opt.text=c.name;sel.appendChild(opt);});
+  sel.value=currentCenter;
+}
+
+function switchCenter(){currentCenter=parseInt(document.getElementById('centerSelect').value); switchViewByName('dashboard');}
+
+function switchView(e){document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active')); e.target.classList.add('active'); switchViewByName(e.target.dataset.view);}
+
+function switchViewByName(view){
+  const vc=document.getElementById('viewContent');
+  if(view==='dashboard'){renderDashboard(); return;}
+  if(view==='students'){renderStudentsView(); return;}
+  vc.innerHTML=`<div class='card'><h2>${view} view content coming soon</h2></div>`;
+}
+
+// --- Dashboard ---
+function renderDashboard(){
+  const vc=document.getElementById('viewContent');
+  const students=centers[currentCenter].students;
+  const teachers=centers[currentCenter].teachers;
+  let totalIncome=students.filter(s=>s.paid).length*FEE_PER_STUDENT;
+  vc.innerHTML=`
+  <div class='card'><h2>Dashboard</h2>
+  <div style='display:flex;gap:12px;flex-wrap:wrap'>
+    <div class='card'>Centers: ${centers.length}</div>
+    <div class='card'>Students: ${students.length}</div>
+    <div class='card'>Teachers: ${teachers.length}</div>
+    <div class='card'>Income: ₹${totalIncome}</div>
+  </div>
+  <canvas id='dashChart' height='200'></canvas>
+  </div>`;
+
+  const ctx=document.getElementById('dashChart').getContext('2d');
+  if(window.dashChart) window.dashChart.destroy();
+  window.dashChart=new Chart(ctx,{type:'bar',data:{labels:students.map(s=>s.name),datasets:[{label:'Fees Paid',data:students.map(s=>s.paid?FEE_PER_STUDENT:0),backgroundColor:'#007bff'}]},options:{responsive:true,plugins:{legend:{display:false}}}});
+}
+
+// --- Students ---
+function renderStudentsView(){
+  const vc=document.getElementById('viewContent');
+  const students=centers[currentCenter].students;
+  vc.innerHTML=`
+    <div class='card'>
+      <h2>Students</h2>
+      <form id='studentForm' onsubmit='return saveStudent(event)'>
+        <input type='hidden' id='studentIndex'/>
+        <label>Name</label><input id='s_name' required />
+        <label>DOB</label><input type='date' id='s_dob' required />
+        <label>Gender</label><select id='s_gender' required><option value=''>--Select--</option><option>Male</option><option>Female</option><option>Other</option></select>
+        <label>Class</label><input id='s_class' required placeholder='Class'/>
+        <label>Parent</label><input id='s_parent' required />
+        <label>Contact</label><input id='s_contact' pattern='[0-9]{10}' placeholder='10-digit' required />
+        <label>Address</label><textarea id='s_address' rows='2' required></textarea>
+        <div style='margin-top:8px;display:flex;gap:8px'><button class='primary' type='submit'>Save</button><button type='button' onclick='studentFormReset()'>Reset</button></div>
+      </form>
     </div>
-  </div>
-  <div class="card"><canvas id="dashboardChart" height="160"></canvas></div>
-`; renderDashboard(); }
-
-function renderDashboard(){ // compute totals
-  document.getElementById('card-centers').innerText = centers.length;
-  const students = centers[currentCenter] ? centers[currentCenter].students||[] : [];
-  const teachers = centers[currentCenter] ? centers[currentCenter].teachers||[] : [];
-  document.getElementById('card-students').innerText = students.length;
-  document.getElementById('card-teachers').innerText = teachers.length;
-  const income = students.filter(s=>s.paid).length * FEE_PER_STUDENT;
-  document.getElementById('card-income').innerText = '₹'+income;
-  renderDashboardChart(); }
-
-function renderDashboardChart(){ const ctx=document.getElementById('dashboardChart').getContext('2d'); if(centerChart) centerChart.destroy(); const students = centers[currentCenter] ? centers[currentCenter].students||[] : []; centerChart = new Chart(ctx,{ type:'bar', data:{ labels: students.map(s=>s.name||'---'), datasets:[{ label:'Fees Paid', data: students.map(s=>s.paid?FEE_PER_STUDENT:0) }] }, options:{ responsive:true, plugins:{ legend:{ display:false } } } }); }
-
-// ----------------- STUDENTS -----------------
-function renderStudentsView(){ const vc=document.getElementById('viewContent'); vc.innerHTML = `
-  <div class="card">
-    <h2>Students</h2>
-    <form id="studentForm" onsubmit="return saveStudent(event)">
-      <input type="hidden" id="studentIndex" />
-      <label>Name</label><input id="s_name" required />
-      <label>Date of Birth</label><input id="s_dob" type="date" required />
-      <label>Gender</label>
-      <select id="s_gender" required><option value="">--Select--</option><option>Male</option><option>Female</option><option>Other</option></select>
-      <label>Class</label><input id="s_class" required placeholder="Class"/>
-      <label>Parent/Guardian</label><input id="s_parent" required />
-      <label>Contact</label><input id="s_contact" pattern="[0-9]{10}" placeholder="10-digit" required />
-      <label>Address</label><textarea id="s_address" rows="2" required></textarea>
-      <div style="margin-top:8px;display:flex;gap:8px">
-        <button class="primary" type="submit">Save</button>
-        <button type="button" onclick="studentFormReset()">Reset</button>
-      </div>
-    </form>
-  </div>
-  <div class="card">
-    <table><thead><tr><th>#</th><th>Name</th><th>DOB</th><th>Gender</th><th>Class</th><th>Parent</th><th>Contact</th><th>Address</th><th>Fee</th><th>Status</th><th>Action</th></tr></thead><tbody id="studentsTable"></tbody></table>
-  </div>
-`;
-  renderStudentsTable(); }
-
-function saveStudent(e){ e.preventDefault(); if(role==='teacher'){ alert('Teachers cannot add/edit students'); return false; } const idx=document.getElementById('studentIndex').value; const s={ name:document.getElementById('s_name').value.trim(), dob:document.getElementById('s_dob').value, gender:document.getElementById('s_gender').value, cls:document.getElementById('s_class').value.trim(), parent:document.getElementById('s_parent').value.trim(), contact:document.getElementById('s_contact').value.trim(), address:document.getElementById('s_address').value.trim(), paid:false }; if(idx===''){ centers[currentCenter].students.push(s); } else { centers[currentCenter].students[parseInt(idx)] = s; } saveCenters(); studentFormReset(); renderStudentsTable(); renderDashboard(); return false; }
-
-function renderStudentsTable(){ const tbody=document.getElementById('studentsTable'); if(!tbody) return; tbody.innerHTML=''; const students = centers[currentCenter] ? centers[currentCenter].students||[] : []; students.forEach((s,i)=>{ const tr=document.createElement('tr'); const paid = s.paid ? 'Paid' : 'Pending'; let actions = ''; if(role==='admin' || role==='center'){ actions = `<button class="action-btn edit-btn" onclick="editStudent(${i})">Edit</button> <button class="action-btn del-btn" onclick="deleteStudent(${i})">Delete</button> <button class="action-btn pay-btn" onclick="markPaid(${i})">Mark Paid</button>`; } else if(role==='teacher'){ actions = s.paid?'-':'<button class="action-btn pay-btn" onclick="markPaid(${i})">Mark Paid</button>'; } tr.innerHTML = `<td>${i+1}</td><td>${s.name}</td><td>${s.dob}</td><td>${s.gender}</td><td>${s.cls}</td><td>${s.parent}</td><td>${s.contact}</td><td>${s.address}</td><td>₹${FEE_PER_STUDENT}</td><td>${paid}</td><td>${actions}</td>`; tbody.appendChild(tr); }); }
-
-function editStudent(i){ if(role==='teacher'){ alert('Teachers cannot edit'); return; } const s = centers[currentCenter].students[i]; document.getElementById('studentIndex').value = i; document.getElementById('s_name').value = s.name; document.getElementById('s_dob').value = s.dob; document.getElementById('s_gender').value = s.gender; document.getElementById('s_class').value = s.cls; document.getElementById('s_parent').value = s.parent; document.getElementById('s_contact').value = s.contact; document.getElementById('s_address').value = s.address; }
-function deleteStudent(i){ if(role==='teacher'){ alert('Teachers cannot delete'); return; } if(!confirm('Delete student?')) return; centers[currentCenter].students.splice(i,1); saveCenters(); renderStudentsTable(); renderDashboard(); }
-function studentFormReset(){ document.getElementById('studentIndex').value=''; const f=document.getElementById('studentForm'); if(f) f.reset(); }
-function markPaid(i){ centers[currentCenter].students[i].paid = true; saveCenters(); renderStudentsTable(); renderDashboard(); }
-
-function renderStudentsTableIfVisible(){ if(document.getElementById('studentsTable')) renderStudentsTable(); }
-
-// ----------------- FEES -----------------
-function renderFeesView(){ const vc=document.getElementById('viewContent'); vc.innerHTML = `
-  <div class="card"><h2>Fees</h2>
-    <div style="margin-bottom:8px"><button class="small-btn" onclick="exportFeesCSV()">Export CSV</button> <button class="small-btn" onclick="printFees()">Print</button></div>
-    <table><thead><tr><th>#</th><th>Name</th><th>Contact</th><th>Amount</th><th>Status</th><th>Action</th></tr></thead><tbody id="feesTable"></tbody></table>
-  </div>
-`;
-  renderFeesTable(); }
-
-function renderFeesTable(){ const tbody=document.getElementById('feesTable'); if(!tbody) return; tbody.innerHTML=''; const students = centers[currentCenter] ? centers[currentCenter].students||[] : []; students.forEach((s,i)=>{ const tr=document.createElement('tr'); const paid = s.paid ? 'Paid' : 'Pending'; const action = s.paid ? '-' : (role==='admin' || role==='center' || role==='teacher' ? `<button class="action-btn pay-btn" onclick="markPaid(${i})">Pay</button>` : '-'); tr.innerHTML = `<td>${i+1}</td><td>${s.name}</td><td>${s.contact}</td><td>₹${FEE_PER_STUDENT}</td><td>${paid}</td><td>${action}</td>`; tbody.appendChild(tr); }); document.getElementById('card-income') && (document.getElementById('card-income').innerText = '₹'+(students.filter(s=>s.paid).length*FEE_PER_STUDENT)); }
-function renderFeesTableIfVisible(){ if(document.getElementById('feesTable')) renderFeesTable(); }
-function exportFeesCSV(){ const students = centers[currentCenter] ? centers[currentCenter].students||[] : []; const rows = ['Name,Contact,Amount,Status'].concat(students.map(s=>`${escapeCsv(s.name)},${s.contact},${FEE_PER_STUDENT},${s.paid?'Paid':'Pending'}`)); downloadData(rows.join('\n'),'fees.csv','text/csv'); }
-function printFees(){ const students = centers[currentCenter] ? centers[currentCenter].students||[] : []; let html = '<h3>Fees</h3><table border="1" style="border-collapse:collapse"><tr><th>#</th><th>Name</th><th>Contact</th><th>Amount</th><th>Status</th></tr>'; students.forEach((s,i)=>{ html += `<tr><td>${i+1}</td><td>${s.name}</td><td>${s.contact}</td><td>₹${FEE_PER_STUDENT}</td><td>${s.paid?'Paid':'Pending'}</td></tr>`; }); html += '</table>'; const w=window.open(); w.document.write(html); w.document.close(); w.print(); }
-
-// ----------------- TEACHERS -----------------
-function renderTeachersView(){ const vc=document.getElementById('viewContent'); vc.innerHTML = `
-  <div class="card">
-    <h2>Teachers</h2>
-    <form id="teacherForm" onsubmit="return saveTeacher(event)">
-      <input type="hidden" id="teacherIndex" />
-      <label>Name</label><input id="t_name" required />
-      <label>Salary</label><input id="t_salary" type="number" min="0" required />
-      <label>Username</label><input id="t_username" required />
-      <label>Password</label><input id="t_password" required />
-      <div style="margin-top:8px;display:flex;gap:8px"><button class="primary" type="submit">Save</button><button type="button" onclick="teacherFormReset()">Reset</button></div>
-    </form>
-  </div>
-  <div class="card"><table><thead><tr><th>#</th><th>Name</th><th>Salary</th><th>Username</th><th>Action</th></tr></thead><tbody id="teachersTable"></tbody></table></div>
-`;
-  renderTeachersTable(); }
-
-function saveTeacher(e){ e.preventDefault(); if(role==='teacher'){ alert('Teachers cannot manage teachers'); return false; } const idx=document.getElementById('teacherIndex').value; const t={ name:document.getElementById('t_name').value.trim(), salary:parseFloat(document.getElementById('t_salary').value)||0, username:document.getElementById('t_username').value.trim(), password:document.getElementById('t_password').value.trim() }; if(idx===''){ centers[currentCenter].teachers.push(t); } else { centers[currentCenter].teachers[parseInt(idx)] = t; } saveCenters(); teacherFormReset(); renderTeachersTable(); renderDashboard(); return false; }
-
-function renderTeachersTable(){ const tbody=document.getElementById('teachersTable'); if(!tbody) return; tbody.innerHTML=''; const teachers = centers[currentCenter] ? centers[currentCenter].teachers||[] : []; teachers.forEach((t,i)=>{ const tr=document.createElement('tr'); const actions = (role==='admin' || role==='center') ? `<button class="action-btn del-btn" onclick="deleteTeacher(${i})">Delete</button>` : '-'; tr.innerHTML = `<td>${i+1}</td><td>${t.name}</td><td>${t.salary}</td><td>${t.username}</td><td>${actions}</td>`; tbody.appendChild(tr); }); }
-function renderTeachersTableIfVisible(){ if(document.getElementById('teachersTable')) renderTeachersTable(); }
-function teacherFormReset(){ document.getElementById('teacherIndex').value=''; const f=document.getElementById('teacherForm'); if(f) f.reset(); }
-function deleteTeacher(i){ if(!confirm('Delete teacher?')) return; centers[currentCenter].teachers.splice(i,1); saveCenters(); renderTeachersTable(); renderDashboard(); }
-
-// ----------------- REPORTS -----------------
-function renderReportsView(){ const vc=document.getElementById('viewContent'); vc.innerHTML = `
-  <div class="card"><h2>Reports</h2>
-    <div style="display:flex;gap:8px;flex-wrap:wrap">
-      <button class="small-btn" onclick="exportStudentsCSV()">Export Students CSV</button>
-      <button class="small-btn" onclick="exportTeachersCSV()">Export Teachers CSV</button>
-      <button class="small-btn" onclick="exportFeesCSV()">Export Fees CSV</button>
-      <button class="small-btn" onclick="printAll()">Print All</button>
-    </div>
-  </div>
-`;
+    <div class='card'>
+      <table><thead><tr><th>#</th><th>Name</th><th>DOB</th><th>Gender</th><th>Class</th><th>Parent</th><th>Contact</th><th>Address</th><th>Actions</th></tr></thead><tbody id='studentsTable'></tbody></table>
+    </div>`;
+  renderStudentsTable();
 }
 
-function exportStudentsCSV(){ const students = centers[currentCenter] ? centers[currentCenter].students||[] : []; if(!students.length){ alert('No students'); return; } const rows = ['Name,DOB,Gender,Class,Parent,Contact,Address,Status'].concat(students.map(s=>`${escapeCsv(s.name)},${s.dob},${escapeCsv(s.gender)},${escapeCsv(s.cls)},${escapeCsv(s.parent)},${s.contact},${escapeCsv(s.address)},${s.paid?'Paid':'Pending'}`)); downloadData(rows.join('\n'),'students.csv','text/csv'); }
-function exportTeachersCSV(){ const teachers = centers[currentCenter] ? centers[currentCenter].teachers||[] : []; if(!teachers.length){ alert('No teachers'); return; } const rows = ['Name,Salary,Username'].concat(teachers.map(t=>`${escapeCsv(t.name)},${t.salary},${escapeCsv(t.username)}`)); downloadData(rows.join('\n'),'teachers.csv','text/csv'); }
-function exportFeesCSV(){ renderFeesTable(); const students = centers[currentCenter] ? centers[currentCenter].students||[] : []; const rows = ['Name,Contact,Amount,Status'].concat(students.map(s=>`${escapeCsv(s.name)},${s.contact},${FEE_PER_STUDENT},${s.paid?'Paid':'Pending'}`)); downloadData(rows.join('\n'),'fees.csv','text/csv'); }
-function printAll(){ const students = centers[currentCenter] ? centers[currentCenter].students||[] : []; const teachers = centers[currentCenter] ? centers[currentCenter].teachers||[] : []; let html = '<h3>Students</h3><table border="1" style="border-collapse:collapse"><tr><th>#</th><th>Name</th><th>DOB</th></tr>'; students.forEach((s,i)=>{ html += `<tr><td>${i+1}</td><td>${s.name}</td><td>${s.dob}</td></tr>`; }); html += '</table><h3>Teachers</h3><table border="1" style="border-collapse:collapse"><tr><th>#</th><th>Name</th><th>Salary</th></tr>'; teachers.forEach((t,i)=>{ html += `<tr><td>${i+1}</td><td>${t.name}</td><td>${t.salary}</td></tr>`; }); const w=window.open(); w.document.write(html); w.document.close(); w.print(); }
-
-// ----------------- CENTERS (admin only) -----------------
-function renderCentersView(){ if(role!=='admin'){ alert('Only admin'); switchViewByName('dashboard'); return; } const vc=document.getElementById('viewContent'); vc.innerHTML = `
-  <div class="card">
-    <h2>Centers</h2>
-    <form id="centerForm" onsubmit="return saveCenter(event)">
-      <input type="hidden" id="centerIndex" />
-      <label>Center Name</label><input id="c_name" required />
-      <label>Username</label><input id="c_username" required />
-      <label>Password</label><input id="c_password" required />
-      <div style="margin-top:8px;display:flex;gap:8px"><button class="primary" type="submit">Save</button><button type="button" onclick="centerFormReset()">Reset</button></div>
-    </form>
-  </div>
-  <div class="card"><table><thead><tr><th>#</th><th>Name</th><th>Username</th><th>Action</th></tr></thead><tbody id="centersTable"></tbody></table></div>
-`;
-  renderCentersTable(); }
-
-function saveCenter(e){ e.preventDefault(); const idx=document.getElementById('centerIndex').value; const name=document.getElementById('c_name').value.trim(); const username=document.getElementById('c_username').value.trim(); const password=document.getElementById('c_password').value.trim(); if(!name||!username||!password){ alert('Fill all'); return false; } if(idx===''){ centers.push({ name, username, password, students:[], teachers:[{name:'Default Teacher',username:'teacher1',password:'1234',salary:15000}] }); } else { const i=parseInt(idx); centers[i].name=name; centers[i].username=username; centers[i].password=password; } saveCenters(); centerFormReset(); renderCentersTable(); populateCenterSelect(); renderDashboard(); return false; }
-function centerFormReset(){ document.getElementById('centerIndex').value=''; const f=document.getElementById('centerForm'); if(f) f.reset(); }
-function renderCentersTable(){ const tbody=document.getElementById('centersTable'); if(!tbody) return; tbody.innerHTML=''; centers.forEach((c,i)=>{ const tr=document.createElement('tr'); tr.innerHTML = `<td>${i+1}</td><td>${c.name}</td><td>${c.username}</td><td><button class="action-btn edit-btn" onclick="editCenter(${i})">Edit</button> <button class="action-btn del-btn" onclick="deleteCenter(${i})">Delete</button></td>`; tbody.appendChild(tr); }); }
-function editCenter(i){ document.getElementById('centerIndex').value=i; document.getElementById('c_name').value=centers[i].name; document.getElementById('c_username').value=centers[i].username; document.getElementById('c_password').value=centers[i].password; }
-function deleteCenter(i){ if(!confirm('Delete center?')) return; centers.splice(i,1); saveCenters(); renderCentersTable(); populateCenterSelect(); if(currentCenter>=centers.length) currentCenter=0; renderAll(); }
-function renderCentersTableIfVisible(){ if(document.getElementById('centersTable')) renderCentersTable(); }
-
-// ----------------- Helpers -----------------
-function downloadData(data,filename,type){ const a=document.createElement('a'); const file=new Blob([data],{type:type}); a.href=URL.createObjectURL(file); a.download=filename; a.click(); }
-function escapeCsv(val){ if(val==null) return ''; return '"'+String(val).replace(/"/g,'""')+'"'; }
-
-// safe checks when loading specific tables
-function renderStudentsTableIfVisible(){ try{ if(document.getElementById('studentsTable')) renderStudentsTable(); }catch(e){}
-}
-function renderTeachersTableIfVisible(){ try{ if(document.getElementById('teachersTable')) renderTeachersTable(); }catch(e){}
-}
-function renderFeesTableIfVisible(){ try{ if(document.getElementById('feesTable')) renderFeesTable(); }catch(e){}
-}
-function renderCentersTableIfVisible(){ try{ if(document.getElementById('centersTable')) renderCentersTable(); }catch(e){}
+function saveStudent(e){
+  e.preventDefault();
+  const idx=document.getElementById('studentIndex').value;
+  const s={name:document.getElementById('s_name').value,dob:document.getElementById('s_dob').value,gender:document.getElementById('s_gender').value,cls:document.getElementById('s_class').value,parent:document.getElementById('s_parent').value,contact:document.getElementById('s_contact').value,address:document.getElementById('s_address').value,paid:false};
+  if(idx===''){centers[currentCenter].students.push(s);}else{centers[currentCenter].students[parseInt(idx)]=s;}
+  saveCenters(); studentFormReset(); renderStudentsTable();
 }
 
-// initialize on load to ensure select is populated
-window.addEventListener('load', ()=>{ centers = JSON.parse(localStorage.getItem('centers')||'[]'); if(!centers.length){ centers.push({ name:'Default Center', username:'center1', password:'1234', students:[], teachers:[{name:'Default Teacher', username:'teacher1', password:'1234', salary:15000}] }); saveCenters(); } populateCenterSelect(); });
+function renderStudentsTable(){
+  const students=centers[currentCenter].students;
+  const tbody=document.getElementById('studentsTable'); tbody.innerHTML='';
+  students.forEach((s,i)=>{const tr=document.createElement('tr'); tr.innerHTML=`<td>${i+1}</td><td>${s.name}</td><td>${s.dob}</td><td>${s.gender}</td><td>${s.cls}</td><td>${s.parent}</td><td>${s.contact}</td><td>${s.address}</td><td><button class='action-btn edit-btn' onclick='editStudent(${i})'>Edit</button> <button class='action-btn del-btn' onclick='deleteStudent(${i})'>Delete</button></td>`; tbody.appendChild(tr);});
+}
+
+function editStudent(i){
+  const s=centers[currentCenter].students[i];
+  document.getElementById('studentIndex').value=i;
+  document.getElementById('s_name').value=s.name;
+  document.getElementById('s_dob').value=s.dob;
+  document.getElementById('s_gender').value=s.gender;
+  document.getElementById('s_class').value=s.cls;
+  document.getElementById('s_parent').value=s.parent;
+  document.getElementById('s_contact').value=s.contact;
+  document.getElementById('s_address').value=s.address;
+}
+
+function deleteStudent(i){if(confirm('Delete?')){centers[currentCenter].students.splice(i,1);saveCenters();renderStudentsTable();}}
+function studentFormReset(){document.getElementById('studentIndex').value='';document.getElementById('studentForm').reset();}
 </script>
 
 </body>
