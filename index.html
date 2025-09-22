@@ -32,14 +32,22 @@ th{background:var(--blue);color:white}
 .edit-btn{background:#28a745}
 .del-btn{background:#dc3545}
 .pay-btn{background:#17a2b8}
+.card{background:white;border-radius:8px;padding:14px;box-shadow:0 6px 18px rgba(0,0,0,.06);margin-bottom:14px}
+.top-cards{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:10px}
+.top-card{flex:1;min-width:180px;background:white;padding:12px;border-radius:6px;box-shadow:0 3px 8px rgba(0,0,0,0.08)}
+.muted{color:#666;font-size:13px}
 </style>
 </head>
 <body>
 
+<!-- Login Page -->
 <div id="loginPage" class="login-box">
   <h2>Sinux India Login</h2>
-  <p class="hint">Login as <b>Admin</b>, <b>Center</b>, or <b>Teacher</b>.<br>
-    <span style="font-size:12px;color:#777;">Default: Admin → admin/admin, Center → center/center123, Teacher → teacher/teacher123</span>
+  <p class="hint">
+    Login as <b>Admin</b>, <b>Center</b>, or <b>Teacher</b>.<br>
+    <span style="font-size:12px;color:#777;">
+      Default: Admin → admin/admin, Center → center/center123, Teacher → teacher/teacher123
+    </span>
   </p>
   <form id="loginForm">
     <label>Username</label>
@@ -50,6 +58,7 @@ th{background:var(--blue);color:white}
   </form>
 </div>
 
+<!-- Main Panel -->
 <div id="mainPanel" style="display:none">
   <header>
     <div class="header-left">
@@ -75,7 +84,7 @@ th{background:var(--blue);color:white}
 
 <script>
 const FEE_PER_STUDENT=100;
-let centers=[], currentCenter=0, role="", currentTeacher=null;
+let centers=[],currentCenter=0,role="",currentTeacher=null;
 
 function seedData(){
   centers=JSON.parse(localStorage.getItem('centers')||'[]');
@@ -90,61 +99,29 @@ function seedData(){
 }
 
 function login(e){
-  e.preventDefault();
-  seedData();
+  e.preventDefault(); seedData();
   const u=document.getElementById('loginUser').value.trim();
   const p=document.getElementById('loginPass').value.trim();
 
-  if(u==='admin' && p==='admin'){role='admin'; openPanel(); return;}
-
+  if(u==='admin' && p==='admin'){role='admin';openPanel();return;}
   const cIndex=centers.findIndex(c=>c.username===u && c.password===p);
-  if(cIndex!==-1){role='center'; currentCenter=cIndex; openPanel(); return;}
-
+  if(cIndex!==-1){role='center';currentCenter=cIndex;openPanel();return;}
   for(let i=0;i<centers.length;i++){
     const tIndex=centers[i].teachers.findIndex(t=>t.username===u && t.password===p);
-    if(tIndex!==-1){role='teacher'; currentCenter=i; currentTeacher=tIndex; openPanel(); return;}
+    if(tIndex!==-1){role='teacher';currentCenter=i;currentTeacher=tIndex;openPanel();return;}
   }
-
   alert('Invalid username or password');
 }
-
 document.getElementById('loginForm').addEventListener('submit', login);
 
-function openPanel(){
-  document.getElementById('loginPage').style.display='none';
-  document.getElementById('mainPanel').style.display='block';
-  initPanel();
-}
+function openPanel(){document.getElementById('loginPage').style.display='none';document.getElementById('mainPanel').style.display='block';initPanel();}
+function logout(){document.getElementById('mainPanel').style.display='none';document.getElementById('loginPage').style.display='block';role=''; currentTeacher=null;}
 
-function logout(){
-  document.getElementById('mainPanel').style.display='none';
-  document.getElementById('loginPage').style.display='block';
-  role=''; currentTeacher=null;
-}
-
-function initPanel(){
-  centers=JSON.parse(localStorage.getItem('centers'));
-  populateCenterSelect();
-  switchViewByName('dashboard');
-}
-
+function initPanel(){centers=JSON.parse(localStorage.getItem('centers'));populateCenterSelect();switchViewByName('dashboard');}
 function saveCenters(){localStorage.setItem('centers',JSON.stringify(centers));}
-function populateCenterSelect(){
-  const sel=document.getElementById('centerSelect');
-  sel.innerHTML='';
-  centers.forEach((c,i)=>{const opt=document.createElement('option'); opt.value=i; opt.text=c.name; sel.appendChild(opt);});
-  sel.value=currentCenter;
-}
-function switchCenter(){
-  currentCenter=parseInt(document.getElementById('centerSelect').value);
-  switchViewByName('dashboard');
-}
-function switchView(e){
-  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
-  e.target.classList.add('active');
-  switchViewByName(e.target.dataset.view);
-}
-
+function populateCenterSelect(){const sel=document.getElementById('centerSelect');sel.innerHTML='';centers.forEach((c,i)=>{const opt=document.createElement('option');opt.value=i;opt.text=c.name;sel.appendChild(opt);}); sel.value=currentCenter;}
+function switchCenter(){currentCenter=parseInt(document.getElementById('centerSelect').value); switchViewByName('dashboard');}
+function switchView(e){document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active')); e.target.classList.add('active'); switchViewByName(e.target.dataset.view);}
 function switchViewByName(view){
   if(view==='dashboard'){renderDashboard(); return;}
   if(view==='students'){renderStudentsView(); return;}
@@ -159,97 +136,24 @@ function renderDashboard(){
   const vc=document.getElementById('viewContent');
   const students=centers[currentCenter].students;
   const teachers=centers[currentCenter].teachers;
-  let paidIncome=students.filter(s=>s.paid).length*FEE_PER_STUDENT;
-  vc.innerHTML=`<div class='card'><h2>Dashboard</h2>
-    <div style='display:flex;gap:12px;flex-wrap:wrap'>
-      <div class='card'>Centers: ${centers.length}</div>
-      <div class='card'>Students: ${students.length}</div>
-      <div class='card'>Teachers: ${teachers.length}</div>
-      <div class='card'>Income: ₹${paidIncome}</div>
-    </div>
-  </div>`;
-}
-
-function renderStudentsView(){
-  const vc=document.getElementById('viewContent');
-  const students=centers[currentCenter].students;
-  vc.innerHTML=`<div class='card'>
-    <h2>Students</h2>
-    <form id='studentForm'>
-      <input type='hidden' id='studentIndex' />
-      <label>Name</label><input id='s_name' required />
-      <label>DOB</label><input type='date' id='s_dob' required />
-      <label>Gender</label><select id='s_gender' required><option value=''>--Select--</option><option>Male</option><option>Female</option><option>Other</option></select>
-      <label>Class</label><input id='s_class' required />
-      <label>Parent</label><input id='s_parent' required />
-      <label>Contact</label><input id='s_contact' pattern='[0-9]{10}' required />
-      <label>Address</label><textarea id='s_address' required></textarea>
-      <div style='margin-top:8px;display:flex;gap:8px'>
-        <button class='primary' type='submit'>Save</button>
-        <button type='button' onclick='studentFormReset()'>Reset</button>
+  let income=students.filter(s=>s.paid).length*FEE_PER_STUDENT;
+  vc.innerHTML=`
+    <div class='card'><h2>Dashboard</h2>
+      <div class='top-cards'>
+        <div class='top-card'>Centers: ${centers.length}</div>
+        <div class='top-card'>Students: ${students.length}</div>
+        <div class='top-card'>Teachers: ${teachers.length}</div>
+        <div class='top-card'>Income: ₹${income}</div>
       </div>
-    </form>
-  </div>
-  <div class='card'>
-    <table><thead><tr><th>#</th><th>Name</th><th>DOB</th><th>Gender</th><th>Class</th><th>Parent</th><th>Contact</th><th>Address</th><th>Actions</th></tr></thead><tbody id='studentsTable'></tbody></table>
-  </div>`;
-  document.getElementById('studentForm').addEventListener('submit', saveStudent);
-  renderStudentsTable();
+    </div>`;
 }
 
-function saveStudent(e){
-  e.preventDefault();
-  const idx=document.getElementById('studentIndex').value;
-  const s={
-    name:document.getElementById('s_name').value,
-    dob:document.getElementById('s_dob').value,
-    gender:document.getElementById('s_gender').value,
-    cls:document.getElementById('s_class').value,
-    parent:document.getElementById('s_parent').value,
-    contact:document.getElementById('s_contact').value,
-    address:document.getElementById('s_address').value,
-    paid:false
-  };
-  if(idx===''){centers[currentCenter].students.push(s);} else {centers[currentCenter].students[parseInt(idx)]=s;}
-  saveCenters(); studentFormReset(); renderStudentsTable();
-}
-
-function renderStudentsTable(){
-  const tbody=document.getElementById('studentsTable');
-  tbody.innerHTML='';
-  centers[currentCenter].students.forEach((s,i)=>{
-    const tr=document.createElement('tr');
-    tr.innerHTML=`<td>${i+1}</td><td>${s.name}</td><td>${s.dob}</td><td>${s.gender}</td><td>${s.cls}</td><td>${s.parent}</td><td>${s.contact}</td><td>${s.address}</td><td><button class='action-btn edit-btn' onclick='editStudent(${i})'>Edit</button> <button class='action-btn del-btn' onclick='deleteStudent(${i})'>Delete</button></td>`;
-    tbody.appendChild(tr);
-  });
-}
-
-function editStudent(i){
-  const s=centers[currentCenter].students[i];
-  document.getElementById('studentIndex').value=i;
-  document.getElementById('s_name').value=s.name;
-  document.getElementById('s_dob').value=s.dob;
-  document.getElementById('s_gender').value=s.gender;
-  document.getElementById('s_class').value=s.cls;
-  document.getElementById('s_parent').value=s.parent;
-  document.getElementById('s_contact').value=s.contact;
-  document.getElementById('s_address').value=s.address;
-}
-
-function deleteStudent(i){
-  if(confirm('Delete?')){centers[currentCenter].students.splice(i,1); saveCenters(); renderStudentsTable();}
-}
-
-function studentFormReset(){
-  document.getElementById('studentIndex').value='';
-  if(document.getElementById('studentForm')) document.getElementById('studentForm').reset();
-}
-
-// Placeholder functions for other views
-function renderFeesView(){document.getElementById('viewContent').innerHTML='<div class="card"><h2>Fees Management</h2></div>'}
-function renderTeachersView(){document.getElementById('viewContent').innerHTML='<div class="card"><h2>Teachers Management</h2></div>'}
-function renderReportsView(){document.getElementById('viewContent').innerHTML='<div class="card"><h2>Reports</h2></div>'}
-function renderCentersView(){document.getElementById('viewContent').innerHTML='<div class="card"><h2>Centers Management</h2></div>'}
+// Placeholder views for simplicity
+function renderStudentsView(){document.getElementById('viewContent').innerHTML=`<div class='card'><h2>Students</h2><p>Student management UI here.</p></div>`;}
+function renderFeesView(){document.getElementById('viewContent').innerHTML=`<div class='card'><h2>Fees</h2><p>Fees management UI here.</p></div>`;}
+function renderTeachersView(){document.getElementById('viewContent').innerHTML=`<div class='card'><h2>Teachers</h2><p>Teacher management UI here.</p></div>`;}
+function renderReportsView(){document.getElementById('viewContent').innerHTML=`<div class='card'><h2>Reports</h2><p>Reports UI here.</p></div>`;}
+function renderCentersView(){document.getElementById('viewContent').innerHTML=`<div class='card'><h2>Centers</h2><p>Centers management UI here.</p></div>`;}
 </script>
 
 </body>
